@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>g8</title>
+<!-- Styling -->
+<style type=text/css>
+body{
+	background: #fff;
+	color: #222;
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	text-align: center;
+}
+
+#container {
+	text-align: center;
+}
+
+div span span:hover {
+	background-color: #CCCCCC;
+	cursor: pointer;
+}
+</style>
+<!-- Start javascript/main.js -->
+    <script src="./public/yabble.js"></script>
+    <script src="./public/gamejs.min.js"></script>
+    <script>
+        require.setModuleRoot('./javascript/');
+        require.run('main')
+    </script>
+</head>
+<!-- Html -->
+<body>
+
+<div id="container">
+	<div id="gjs-loader"><img src="./loading.gif"></div>
+	<canvas id="gjs-canvas"></canvas>
+</div>
+<p>
+	Powered by <a href="http://gamejs.org">GameJs</a>
+</p>
+
+</body>
+</html>
