@@ -9,7 +9,7 @@ function conv()
 		shift
 		make back_hair1.png bh1
 		make back_hair2.png bh2
-		make back_hair3.png bh3
+		make back_hair3.png bh bh3
 		make body1.png b ^p
 		make skirt1.png s
 		make face1.png f1 h1 m1
@@ -35,6 +35,7 @@ function conv()
 		make deko1.png deko1f deko1h deko1m - dekoh2
 		make deko2.png deko2f deko2h deko2m
 		make deko3.png f1 h1 deko3m ^deko3a
+		make deko2back_hair1.png deko2bh1
 	done
 	return 0
 }
