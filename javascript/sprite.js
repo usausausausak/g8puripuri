@@ -12,7 +12,8 @@ var Anime = exports.Anime = function (interval)
 {
 	this.frames = [];
 	for (var i = 1; i < arguments.length; ++i) {
-		var images = $h.load_image(arguments[i]);
+		var images = (arguments[i]) ?
+			$h.load_image(arguments[i]) : null;
 		this.frames.push({ wait: interval, img: images } );
 	}
 	this.frame_current = 0;
