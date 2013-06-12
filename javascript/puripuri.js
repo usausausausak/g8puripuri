@@ -6,7 +6,7 @@ exports.Action = function ()
 {
 	var left_rect = new gamejs.Rect(229, 202, 50, 60);
 	var right_rect = new gamejs.Rect(418, 202, 50, 60);
-	var hand_image = $h.misc_list("purih1", "purih2", "purih3");
+	var hand_image = $h.misc_list("purih1");
 	var image = $h.image_list("puri1", "puri2", "puri3");
 	var is_right = false;
 	var mouse_start = [0, 0];
@@ -48,12 +48,11 @@ exports.Action = function ()
 		var diff = $h.mouse_diff(mouse, mouse_start);
 		if (!is_right) diff.x = -diff.x;
 		var level = parseInt(diff.x / 30);
-		if (level > hand_image.length - 1)
-			level = hand_image.length - 1;
+		if (level > image.length - 1)
+			level = image.length - 1;
 		if (level < 0) level = 0;
 
 		sprite.draw({ "face": image[level] });
-		display.blit(hand_image[level], $s.Pos());
 		return true;
 	}
 }

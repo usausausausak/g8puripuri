@@ -15,22 +15,23 @@ function conv()
 		make face1.png f1 h1 m1
 		make face2.png f1 h1 m2
 		make face3.png f1 h1 m3
-		make puri1.png f1 h1 puri2m
-		make puri2.png puri2f puri2h puri2m
-		make puri3.png puri3f puri3h puri3m
+		make puri1.png f1 h1 puri2m - purih1
+		make puri2.png puri2f puri2h puri2m - purih2
+		make puri3.png puri3f puri3h puri3m - purih3
 		make nade1.png f1 h1 nade2m
 		make nade2.png f1 nade2h nade3m
 		make nade3.png f1 nade3h nade3m
-		make meguri1skirt.png meguri1s
-		make meguri2skirt.png meguri2s
-		make meguri3skirt.png meguri3s
+		make meguri1skirt.png meguri1s - megurih1
+		make meguri2skirt.png meguri2s - megurih2
+		make meguri3skirt.png meguri3s - megurih3
+		make meguri_left1skirt.png meguri1ls - megurihl1
+		make meguri_left2skirt.png meguri2ls - megurihl2
+		make meguri_left3skirt.png meguri3s - megurihl3
 		make meguria1body.png meguria1b ^meguria1p
 		make meguria2body.png meguria2b ^p
 		make meguria1skirt.png meguria1s
 		make meguria2skirt.png meguria2s
 		make meguria3skirt.png meguria3s
-		make meguri_left1skirt.png meguri1ls
-		make meguri_left2skirt.png meguri2ls
 		make deko1.png deko1f deko1h deko1m - dekoh2
 		make deko2.png deko2f deko2h deko2m
 		make deko3.png f1 h1 deko3m ^deko3a
@@ -88,7 +89,7 @@ function do_make()
 		shift
 		while [[ -n "$1" ]]
 		do
-			cmd="$cmd ../imagemisc/${1}.png -composite"
+			cmd="$cmd ../rawmisc/${1}.png -composite"
 			shift
 		done 
 	fi

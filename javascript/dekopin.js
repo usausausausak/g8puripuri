@@ -7,7 +7,7 @@ exports.Action = function ()
 	var rect = new gamejs.Rect(310, 100, 70, 70);
 	var bar_rect = new gamejs.Rect(380, 70, 100, 20);
 	var cur_rect = bar_rect.clone();
-	var hand_image = $h.misc_list("dekoh1", "dekoh2");
+	var hand_image = $h.misc_list("dekoh1");
 	var anime = {
 		face: new $s.Anime(50, "deko1", "deko2", "deko3")
 		};
@@ -37,16 +37,14 @@ exports.Action = function ()
 	}
 	this.update = function (display, sprite, mouse, ms_pass)
 	{
-		var hand = 0;
 		if (sec_pass >= hold_sec) {
 			sec_pass = hold_sec;
-			var hand = 1;
 		} else {
 			sec_pass += ms_pass;
 		}
 		cur_rect.width = sec_pass / hold_sec * 100;
 		sprite.draw();
-		display.blit(hand_image[hand], $s.Pos());
+		display.blit(hand_image[0], $s.Pos());
 		gamejs.draw.rect(display, "rgba(0, 0, 255, 0.3)", bar_rect);
 		gamejs.draw.rect(display, "rgba(0, 0, 255, 0.3)", cur_rect);
 		return (sec_pass < hold_sec);

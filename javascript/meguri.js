@@ -16,15 +16,11 @@ exports.Action = function ()
 		new gamejs.Rect(275, 482, 120, 130),
 		new gamejs.Rect(291, 312, 200, 170)
 	];
-	var right_hand_image = $h.misc_list(
-		"megurih1", "megurih2", "megurih3");
-	var left_hand_image = $h.misc_list(
-		"megurihl1", "megurihl2", "megurihl3");
 	var right_image = $h.image_list(
 		"meguri1skirt", "meguri2skirt", "meguri3skirt");
 	var left_image = $h.image_list(
 		"meguri_left1skirt", "meguri_left2skirt",
-		"meguri3skirt");
+		"meguri_left3skirt");
 	var anime = {
 		body: new $s.Anime(70, "meguria1body", "meguria2body"),
 		skirt: new $s.Anime(70,
@@ -35,7 +31,6 @@ exports.Action = function ()
 	var sprite_anime = new $s.SpriteAnime(anime);
 	var rects = null;
 	var image = null;
-	var hand_image = null;
 	var hold = [10000, 200, 3000];
 	var hold_pass = 0;
 	var last_level = 0;
@@ -58,13 +53,11 @@ exports.Action = function ()
 			$h.mouse_copy(mouse_start, mouse);
 			rects = right_rects;
 			image = right_image;
-			hand_image = right_hand_image;
 			return true;
 		} else if (left_rects[1].collidePoint(mouse)) {
 			$h.mouse_copy(mouse_start, mouse);
 			rects = left_rects;
 			image = left_image;
-			hand_image = left_hand_image;
 			return true;
 		} else {
 			return false;
@@ -99,7 +92,6 @@ exports.Action = function ()
 			--level;
 			in_anime = (hold_pass > hold[level]);
 			sprite.draw({ "skirt": image[level] });
-			display.blit(hand_image[level], $s.Pos());
 			return (!in_anime);;
 		}
 	}
