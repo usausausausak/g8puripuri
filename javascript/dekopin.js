@@ -8,8 +8,17 @@ exports.Action = function ()
 	var bar_rect = new gamejs.Rect(380, 70, 100, 20);
 	var cur_rect = bar_rect.clone();
 	var hand_image = $h.misc_list("dekoh1");
+	var hair_anime = {
+		back_hair1: new $s.Anime(50, null, "deko2back_hair1"),
+		back_hair2: new $s.Anime(50, null, "deko2back_hair2"),
+		back_hair3: new $s.Anime(50, null, "deko2back_hair3"),
+		};
+	hair_anime.back_hair1.frames[1].wait = 100;
+	hair_anime.back_hair2.frames[1].wait = 100;
+	hair_anime.back_hair3.frames[1].wait = 100;
 	var anime = {
-		face: new $s.Anime(50, "deko1", "deko2", "deko3")
+		face: new $s.Anime(50, "deko1", "deko2", "deko3"),
+		back_hair: hair_anime.back_hair1
 		};
 	anime.face.frames[1].wait = 100;
 	anime.face.frames[2].wait = 300;
@@ -37,10 +46,11 @@ exports.Action = function ()
 	}
 	this.update = function (display, sprite, mouse, ms_pass)
 	{
+		sec_pass += ms_pass;
 		if (sec_pass >= hold_sec) {
 			sec_pass = hold_sec;
-		} else {
-			sec_pass += ms_pass;
+			var back_hair = sprite.get_layer("back_hair");
+			anime.back_hair = hair_anime[back_hair];
 		}
 		cur_rect.width = sec_pass / hold_sec * 100;
 		sprite.draw();
