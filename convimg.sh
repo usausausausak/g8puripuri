@@ -31,7 +31,7 @@ function conv()
 		make meguria3skirt.png meguria3s
 		make meguri_left1skirt.png meguri1ls
 		make meguri_left2skirt.png meguri2ls
-		make deko1.png deko1f deko1h deko1m
+		make deko1.png deko1f deko1h deko1m - dekoh2
 		make deko2.png deko2f deko2h deko2m
 		make deko3.png f1 h1 deko3m ^deko3a
 	done
