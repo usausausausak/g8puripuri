@@ -9,16 +9,17 @@ exports.Action = function ()
 	var cur_rect = bar_rect.clone();
 	var hand_image = $h.misc_list("dekoh1");
 	var hair_anime = {
-		back_hair1: new $s.Anime(50, null, "deko2back_hair1"),
-		back_hair2: new $s.Anime(50, null, "deko2back_hair2"),
-		back_hair3: new $s.Anime(50, null, "deko2back_hair3"),
+		back1: new $s.Anime(50, null, "deko2back1"),
+		back2: new $s.Anime(50, null, "deko2back2"),
+		back3: new $s.Anime(50, null, "deko2back3"),
 		};
-	hair_anime.back_hair1.frames[1].wait = 100;
-	hair_anime.back_hair2.frames[1].wait = 100;
-	hair_anime.back_hair3.frames[1].wait = 100;
+	hair_anime.back1.frames[1].wait = 100;
+	hair_anime.back2.frames[1].wait = 100;
+	hair_anime.back3.frames[1].wait = 100;
 	var anime = {
-		face: new $s.Anime(50, "deko1", "deko2", "deko3"),
-		back_hair: hair_anime.back_hair1
+		face: new $s.Anime(50,
+			"deko1face", "deko2face", "deko3face"),
+		back: hair_anime.back1
 		};
 	anime.face.frames[1].wait = 100;
 	anime.face.frames[2].wait = 300;
@@ -49,8 +50,8 @@ exports.Action = function ()
 		sec_pass += ms_pass;
 		if (sec_pass >= hold_sec) {
 			sec_pass = hold_sec;
-			var back_hair = sprite.get_layer("back_hair");
-			anime.back_hair = hair_anime[back_hair];
+			var back = sprite.get_layer("back");
+			anime.back = hair_anime[back];
 		}
 		cur_rect.width = sec_pass / hold_sec * 100;
 		sprite.draw();

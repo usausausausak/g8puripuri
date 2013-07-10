@@ -6,7 +6,7 @@ exports.Action = function ()
 {
 	var rect = new gamejs.Rect(191 + 99, 33, 110, 44);
 	var hand_image = $h.misc_list("nadeh2", "nadeh1", "nadeh3");
-	var image = $h.image_list("nade2", "nade1", "nade3");
+	var image = $h.image_list("nade2face", "nade1face", "nade3face");
 	var face = 1;
 	var hand = 1;
 	var sec_pass = 0;

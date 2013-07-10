@@ -7,37 +7,37 @@ function conv()
 	do
 		only=$1
 		shift
-		make back_hair1.png bh1
-		make back_hair2.png bh2
-		make back_hair3.png bh bh3
-		make body1.png b ^p
-		make skirt1.png s
-		make face1.png f1 h1 m1
-		make face2.png f1 h1 m2
-		make face3.png f1 h1 m3
-		make puri1.png f1 h1 puri2m - purih1
-		make puri2.png puri2f puri2h puri2m - purih2
-		make puri3.png puri3f puri3h puri3m - purih3
-		make nade1.png f1 h1 nade2m
-		make nade2.png f1 nade2h nade3m
-		make nade3.png f1 nade3h nade3m
-		make meguri1skirt.png meguri1s - megurih1
-		make meguri2skirt.png meguri2s - megurih2
-		make meguri3skirt.png meguri3s - megurih3
-		make meguri_left1skirt.png meguri1ls - megurihl1
-		make meguri_left2skirt.png meguri2ls - megurihl2
-		make meguri_left3skirt.png meguri3s - megurihl3
-		make meguria1body.png meguria1b ^meguria1p
-		make meguria2body.png meguria2b ^p
-		make meguria1skirt.png meguria1s
-		make meguria2skirt.png meguria2s
-		make meguria3skirt.png meguria3s
-		make deko1.png deko1f deko1h deko1m - dekoh2
-		make deko2.png deko2f deko2h deko2m
-		make deko3.png f1 h1 deko3m ^deko3a
-		make deko2back_hair1.png deko2bh
-		make deko2back_hair2.png deko2bh2
-		make deko2back_hair3.png deko2bh deko2bh3
+		make back1.png bh
+		make back2.png bh2
+		make back3.png bh bh3
+		make top_b.png t ^tp st
+		make top_l.png tl ^tp stl
+		make bottom1.png b ^bp sb
+		make face1.png fb f1 h1 m1
+		make face2.png fb f1 h1 m2
+		make face3.png fb f1 h1 m3
+		make puri1face.png fb f1 h1 puri2m - purih1
+		make puri2face.png fb puri2f puri2h puri2m - purih2
+		make puri3face.png fb puri3f puri3h puri3m - purih3
+		make nade1face.png fb f1 h1 nade2m
+		make nade2face.png fb f1 nade2h nade3m
+		make nade3face.png fb f1 nade3h nade3m
+		make meguri_r1bottom.png b ^bp meguri1rsb - megurih1
+		make meguri_r2bottom.png b ^bp meguri2rsb - megurih2
+		make meguri_r3bottom.png b ^bp meguri3sb - megurih3
+		make meguri_l1bottom.png b ^bp meguri1lsb - megurihl1
+		make meguri_l2bottom.png b ^bp meguri2lsb - megurihl2
+		make meguri_l3bottom.png b ^bp meguri3sb - megurihl3
+		make meguri_a1front.png meguria1fr meguria1sfr
+		make meguri_a2front.png meguria2fr meguria2sfr
+		make meguri_a1bottom.png b ^bp meguria1sb
+		make meguri_a2bottom.png b ^bp meguria2sb
+		make deko1face.png fb deko1f deko1h deko1m - dekoh2
+		make deko2face.png fb deko2f deko2h deko2m
+		make deko3face.png fb f1 h1 deko3m ^deko3a
+		make deko2back1.png deko2bh
+		make deko2back2.png deko2bh2
+		make deko2back3.png deko2bh deko2bh3
 	done
 	return 0
 }

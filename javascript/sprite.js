@@ -90,16 +90,16 @@ SpriteAnime.prototype.playing = function (ms_pass)
 var Sprite = exports.Sprite = function (display)
 {
 	var image = $h.image_map(
-		"back_hair1", "back_hair2", "back_hair3", 
-		"body1", "skirt1", "face1");
+		"back1", "back2", "back3", 
+		"top_b", "bottom1", "face1");
 	var layer = {
-		"back_hair": image.back_hair1,
-		"body": image.body1,
-		"skirt": image.skirt1,
+		"back": image.back1,
 		"face": image.face1,
-		"top": null
+		"top": image.top_b,
+		"bottom": image.bottom1,
+		"front": null
 	};
-	pos = [$h.center_x(layer.body[0]), 0];
+	pos = [$h.center_x(layer.back[0]), 0];
 	this.flags = { "hair1": false };
 	this.set_layer = function (lid, id)
 	{
@@ -111,11 +111,11 @@ var Sprite = exports.Sprite = function (display)
 	}
 	this.draw = function (override)
 	{
-		this.draw_layer("back_hair", override);
-		this.draw_layer("body", override);
-		this.draw_layer("skirt", override);
+		this.draw_layer("back", override);
 		this.draw_layer("face", override);
 		this.draw_layer("top", override);
+		this.draw_layer("bottom", override);
+		this.draw_layer("front", override);
 	}
 	this.draw_layer = function (lid, override)
 	{

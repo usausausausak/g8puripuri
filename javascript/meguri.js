@@ -16,18 +16,18 @@ exports.Action = function ()
 		new gamejs.Rect(275, 482, 120, 130),
 		new gamejs.Rect(291, 312, 200, 170)
 	];
-	var right_image = $h.image_list(
-		"meguri1skirt", "meguri2skirt", "meguri3skirt");
 	var left_image = $h.image_list(
-		"meguri_left1skirt", "meguri_left2skirt",
-		"meguri_left3skirt");
+		"meguri_l1bottom", "meguri_l2bottom", "meguri_l3bottom");
+	var right_image = $h.image_list(
+		"meguri_r1bottom", "meguri_r2bottom", "meguri_r3bottom");
 	var anime = {
-		body: new $s.Anime(70, "meguria1body", "meguria2body"),
-		skirt: new $s.Anime(70,
-			"meguria1skirt", "meguria2skirt", "meguria3skirt")
+		top: new $s.Anime(370, "top_l"),
+		bottom: new $s.Anime(70,
+			"meguri_a1bottom", "meguri_a2bottom", null),
+		front: new $s.Anime(70, "meguri_a1front", "meguri_a2front")
 	};
-	anime.body.frames[1].wait = 300;
-	anime.skirt.frames[2].wait = 230;
+	anime.bottom.frames[2].wait = 230;
+	anime.front.frames[1].wait = 300;
 	var sprite_anime = new $s.SpriteAnime(anime);
 	var rects = null;
 	var image = null;
@@ -91,7 +91,7 @@ exports.Action = function ()
 		} else {
 			--level;
 			in_anime = (hold_pass > hold[level]);
-			sprite.draw({ "skirt": image[level] });
+			sprite.draw({ "bottom": image[level] });
 			return (!in_anime);;
 		}
 	}

@@ -62,15 +62,15 @@ function Icon(display)
 		switch (id) {
 		case "hair1":
 			enable("hair2", "hair3");
-			sprite.set_layer("back_hair", "back_hair1");
+			sprite.set_layer("back", "back1");
 			break;
 		case "hair2":
 			enable("hair1", "hair3");
-			sprite.set_layer("back_hair", "back_hair2");
+			sprite.set_layer("back", "back2");
 			break;
 		case "hair3":
 			enable("hair1", "hair2");
-			sprite.set_layer("back_hair", "back_hair3");
+			sprite.set_layer("back", "back3");
 			break;
 		}
 	}
@@ -270,7 +270,7 @@ function main()
 			display.blit(font.render("fps: " + fps_last));
 			display.blit(font.render(running.mouse), [0, 20]);
 			var pos = [0, 40];
-			var a = "back_hair,body,skirt,face,top".split(/,/);
+			var a = "back,face,top,bottom,front".split(/,/);
 			for (var i in a) {
 				pos[1] += 20;
 				var s = "+" + sprite.get_layer(a[i]);
