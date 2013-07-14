@@ -87,11 +87,25 @@ SpriteAnime.prototype.playing = function (ms_pass)
 	return ret;
 }
 
+SpriteAnime.prototype.looping = function (ms_pass)
+{
+	var ret = {};
+	this.end = true;
+	for (var i in this.layers) {
+		var layer = this.layers[i];
+		if (!layer.end) {
+			ret[i] = layer.looping(ms_pass);
+			this.end = false;
+		}
+	}
+	return ret;
+}
+
 var Sprite = exports.Sprite = function (display)
 {
 	var image = $h.image_map(
 		"back1", "back2", "back3", 
-		"top_b", "bottom1", "face1");
+		"top_b", "pero1top1", "bottom1", "face1");
 	var layer = {
 		"back": image.back1,
 		"face": image.face1,

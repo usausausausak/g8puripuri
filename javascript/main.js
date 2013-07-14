@@ -23,7 +23,8 @@ var mouse = [0, 0];
 
 function Icon(display)
 {
-	var image = $h.misc_map("icon_h1", "icon_h2", "icon_h3");
+	var image = $h.misc_map("icon_h1", "icon_h2", "icon_h3",
+		"icon_candy");
 	var all_icon = {};
 	all_icon.hair1 = { img: "icon_h1",
 		rt: new gamejs.Rect(5, 500, 50, 50) };
@@ -31,6 +32,8 @@ function Icon(display)
 		rt: new gamejs.Rect(60, 500, 50, 50) };
 	all_icon.hair3 = { img: "icon_h3",
 		rt: new gamejs.Rect(120, 500, 50, 50) };
+	all_icon.candy = { img: "icon_candy",
+		rt: new gamejs.Rect(5, 560, 50, 50) };
 
 	var enable = function ()
 	{
@@ -72,7 +75,11 @@ function Icon(display)
 			enable("hair1", "hair2");
 			sprite.set_layer("back", "back3");
 			break;
+		case "candy":
+			sprite.set_layer("top", "pero1top1");
+			break;
 		}
+		futuu.start();
 	}
 
 	this.draw = function ()
@@ -94,17 +101,31 @@ function Icon(display)
 
 function Futuu()
 {
-	var anime = new $s.Anime(50, "face1", "face2", "face3");
-	anime.frames[0].wait = 5000;
+	var face_anime = new $s.Anime(50, "face1", "face2", "face3");
+	face_anime.frames[0].wait = 5000;
+	var pero_anime = [
+		new $s.Anime(300, "pero1top1", "pero2top1"),
+		new $s.Anime(300, "pero1top2", "pero2top2"),
+		new $s.Anime(300, "pero1top3", "pero2top3")];
+	var anime = { "face": face_anime };
+	var sprite_anime = new $s.SpriteAnime(anime);
 	this.start = function ()
 	{
-		anime.reset();
+		face_anime.reset();
+		var match = sprite.get_layer("top").match(/pero1top([0-9])/);
+		if (match) {
+			var pero = parseInt(match[1]) - 1;
+			pero_anime[pero].reset();
+			anime.top = pero_anime[pero];
+		} else {
+			delete anime.top;
+		}
 		return true;
 	}
 	this.end = function () {}
 	this.update = function (display, sprite, mouse, ms_pass)
 	{
-		sprite.draw({ "face": anime.looping(ms_pass) });
+		sprite.draw(sprite_anime.looping(ms_pass));
 		return true;
 	}
 }
