@@ -103,10 +103,14 @@ function Futuu()
 {
 	var face_anime = new $s.Anime(50, "face1", "face2", "face3");
 	face_anime.frames[0].wait = 5000;
+	face_anime.loop(true);
 	var pero_anime = [
 		new $s.Anime(300, "pero1top1", "pero2top1"),
 		new $s.Anime(300, "pero1top2", "pero2top2"),
 		new $s.Anime(300, "pero1top3", "pero2top3")];
+	for (var i in pero_anime) {
+		pero_anime[i].loop(true);
+	}
 	var anime = { "face": face_anime };
 	var sprite_anime = new $s.SpriteAnime(anime);
 	this.start = function ()
@@ -125,7 +129,7 @@ function Futuu()
 	this.end = function () {}
 	this.update = function (display, sprite, mouse, ms_pass)
 	{
-		sprite.draw(sprite_anime.looping(ms_pass));
+		sprite.draw(sprite_anime.playing(ms_pass));
 		return true;
 	}
 }

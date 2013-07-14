@@ -19,6 +19,12 @@ var Anime = exports.Anime = function (interval)
 	this.frame_current = 0;
 	this.ms_pass = 0;
 	this.end = false;
+	this.frame_last = this.frames.length - 1;
+}
+
+Anime.prototype.loop = function (flag)
+{
+	this.frame_last = (flag) ? 0 : this.frames.length - 1;
 }
 
 Anime.prototype.reset = function ()
@@ -36,24 +42,10 @@ Anime.prototype.playing = function (ms_pass)
 		this.ms_pass -= this.frames[this.frame_current].wait;
 		++this.frame_current;
 		if (this.frame_current >= this.frames.length) {
-			this.frame_current = this.frames.length - 1;
-			this.end = true;
+			this.frame_current = this.frame_last;
+			this.end = (this.frame_current ==
+				this.frames.length - 1);
 			break;
-		}
-	}
-	return this.frames[this.frame_current].img;
-}
-
-Anime.prototype.looping = function (ms_pass)
-{
-	this.ms_pass += ms_pass;
-	this.end = false;
-	// maybe skip
-	while (this.ms_pass >= this.frames[this.frame_current].wait) {
-		this.ms_pass -= this.frames[this.frame_current].wait;
-		++this.frame_current;
-		if (this.frame_current >= this.frames.length) {
-			this.frame_current = 0;
 		}
 	}
 	return this.frames[this.frame_current].img;
@@ -81,20 +73,6 @@ SpriteAnime.prototype.playing = function (ms_pass)
 		var layer = this.layers[i];
 		if (!layer.end) {
 			ret[i] = layer.playing(ms_pass);
-			this.end = false;
-		}
-	}
-	return ret;
-}
-
-SpriteAnime.prototype.looping = function (ms_pass)
-{
-	var ret = {};
-	this.end = true;
-	for (var i in this.layers) {
-		var layer = this.layers[i];
-		if (!layer.end) {
-			ret[i] = layer.looping(ms_pass);
 			this.end = false;
 		}
 	}
