@@ -55,13 +55,11 @@ exports.misc_map = function ()
 
 var load_image = exports.load_image = function (id)
 {
-	var ret = [null, id];
 	if (argv.mono) {
-		ret[0] = gamejs.image.load("./image_m/" + id + ".png");
+		return gamejs.image.load("./image_m/" + id + ".png");
 	} else {
-		ret[0] = gamejs.image.load("./image/" + id + ".png");
+		return gamejs.image.load("./image/" + id + ".png");
 	}
-	return ret;
 }
 
 exports.image_list = function ()

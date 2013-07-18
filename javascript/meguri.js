@@ -91,8 +91,11 @@ exports.Action = function ()
 		} else {
 			--level;
 			in_anime = (hold_pass > hold[level]);
-			sprite.draw({ "bottom": image[level] });
-			return (!in_anime);;
+			if (sprite.get_layer("top").match(/^pero/)) {
+				in_anime = false;
+			}
+			sprite.playing(ms_pass, { "bottom": image[level] });
+			return (!in_anime);
 		}
 	}
 }

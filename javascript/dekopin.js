@@ -27,6 +27,7 @@ exports.Action = function ()
 	var sec_pass = 0;
 	var hold_sec = 1000;
 	var mouse_start = [0, 0];
+	var count = 0;
 	this.active = false;
 	this.start = function (mouse)
 	{
@@ -52,9 +53,12 @@ exports.Action = function ()
 			sec_pass = hold_sec;
 			var back = sprite.get_layer("back");
 			anime.back = hair_anime[back];
+			if ((sprite.flags.candy == undefined) && (++count > 5)) {
+				sprite.flags.candy = true;
+			}
 		}
 		cur_rect.width = sec_pass / hold_sec * 100;
-		sprite.draw();
+		sprite.playing(ms_pass);
 		display.blit(hand_image[0], $s.Pos());
 		gamejs.draw.rect(display, "rgba(0, 0, 255, 0.3)", bar_rect);
 		gamejs.draw.rect(display, "rgba(0, 0, 255, 0.3)", cur_rect);

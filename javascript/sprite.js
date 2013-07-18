@@ -7,14 +7,48 @@ exports.Pos = function ()
 	return pos;
 }
 
+var image_list = exports.image_list = function ()
+{
+	var images = []
+	for (var i in arguments) {
+		images.push(new Image(arguments[i]));
+	}
+	return images;
+}
+
+var image_map = exports.image_map = function ()
+{
+	var images = {};
+	for (var i in arguments) {
+		var id = arguments[i];
+		images[id] = new Image(id);
+	}
+	return images;
+}
+
+var Image = exports.Image = function (id)
+{
+	this.id = id;
+	this.img = $h.load_image(id);
+	this.end = false;
+}
+
+Image.prototype.reset = function () { }
+
+Image.prototype.playing = Image.prototype.image = function ()
+{
+	return this.img;
+}
+
 // new Anime(wait_sec, "frame1", "frame2", "frame3"...);
 var Anime = exports.Anime = function (interval)
 {
+	this.id = (arguments.length > 1) ? arguments[1] : "";
 	this.frames = [];
 	for (var i = 1; i < arguments.length; ++i) {
-		var images = (arguments[i]) ?
+		var image = (arguments[i]) ?
 			$h.load_image(arguments[i]) : null;
-		this.frames.push({ wait: interval, img: images } );
+		this.frames.push({ wait: interval, img: image } );
 	}
 	this.frame_current = 0;
 	this.ms_pass = 0;
@@ -51,6 +85,11 @@ Anime.prototype.playing = function (ms_pass)
 	return this.frames[this.frame_current].img;
 }
 
+Anime.prototype.image = function ()
+{
+	return this.frames[this.frame_current].img;
+}
+
 var SpriteAnime = exports.SpriteAnime = function (layers)
 {
 	this.layers = layers;
@@ -81,26 +120,48 @@ SpriteAnime.prototype.playing = function (ms_pass)
 
 var Sprite = exports.Sprite = function (display)
 {
-	var image = $h.image_map(
-		"back1", "back2", "back3", 
-		"top_b", "pero1top1", "bottom1", "face1");
+	var image = image_map(
+		"back1", "top_b", "bottom1");
+	var face_anime = new Anime(50, "face1", "face2", "face3");
+	face_anime.frames[0].wait = 5000;
+	face_anime.loop(true);
 	var layer = {
 		"back": image.back1,
-		"face": image.face1,
+		"face": face_anime,
 		"top": image.top_b,
 		"bottom": image.bottom1,
 		"front": null
 	};
-	pos = [$h.center_x(layer.back[0]), 0];
+	pos = [$h.center_x(layer.back.image()), 0];
 	this.flags = { "hair1": false };
-	this.set_layer = function (lid, id)
+	this.set_layer = function (lid, image)
 	{
-		layer[lid] = image[id];
+		layer[lid] = image;
 	}
+
 	this.get_layer = function (lid)
 	{
-		return (layer[lid]) ? layer[lid][1] : "";
+		return (layer[lid]) ? layer[lid].id : "";
 	}
+
+	this.playing = function (ms_pass, override)
+	{
+		this.playing_layer("back", ms_pass, override);
+		this.playing_layer("face", ms_pass, override);
+		this.playing_layer("top", ms_pass, override);
+		this.playing_layer("bottom", ms_pass, override);
+		this.playing_layer("front", ms_pass, override);
+	}
+
+	this.playing_layer = function (lid, ms_pass, override)
+	{
+		if ((override) && (override[lid])) {
+			display.blit(override[lid], pos);
+		} else if (layer[lid]) {
+			display.blit(layer[lid].playing(ms_pass), pos);
+		}
+	}
+
 	this.draw = function (override)
 	{
 		this.draw_layer("back", override);
@@ -109,16 +170,17 @@ var Sprite = exports.Sprite = function (display)
 		this.draw_layer("bottom", override);
 		this.draw_layer("front", override);
 	}
+
 	this.draw_layer = function (lid, override)
 	{
 		if ((override) && (override[lid])) {
-			display.blit(override[lid][0], pos);
+			display.blit(override[lid], pos);
 		} else if (layer[lid]) {
-			display.blit(layer[lid][0], pos);
+			display.blit(layer[lid].image(), pos);
 		}
 	}
 	this.blit = function (image)
 	{
-		display.blit(image[0], pos);
+		display.blit(image.image(), pos);
 	}
 }
