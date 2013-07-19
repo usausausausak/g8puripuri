@@ -24,14 +24,6 @@ var mouse = [0, 0];
 function Icon()
 {
 	var image = $s.image_map("back1", "back2", "back3", "top_b");
-	var pero_anime = [
-		new $s.Anime(300, "pero1top1", "pero2top1"),
-		new $s.Anime(300, "pero1top2", "pero2top2"),
-		new $s.Anime(300, "pero1top3", "pero2top3")];
-	for (var i in pero_anime) {
-		pero_anime[i].loop(true);
-	}
-
 	var misc = $h.misc_map("icon_h1", "icon_h2", "icon_h3",
 		"icon_candy");
 	var all_icon = {};
@@ -53,6 +45,51 @@ function Icon()
 			}
 		}
 	}
+
+	var Peropero = function ()
+	{
+		var pero_anime = [
+			new $s.Anime(300, "pero1top1", "pero2top1"),
+			new $s.Anime(300, "pero1top2", "pero2top2"),
+			new $s.Anime(300, "pero1top3", "pero2top3")];
+		for (var i in pero_anime) {
+			pero_anime[i].loop(true);
+		}
+		var sec_pass = 0;
+		var pero = 0;
+		var anime = pero_anime[0];
+		this.id = "pero";
+		this.reset = function ()
+		{
+			sec_pass = 0;
+			pero = 0;
+			anime = pero_anime[0];
+			for (var i in pero_anime) {
+				pero_anime[i].reset();
+			}
+		}
+		this.playing = function (ms_pass)
+		{
+			sec_pass += ms_pass;
+			if (sec_pass >= 2000) {
+				if (++pero < pero_anime.length) {
+					sec_pass = 0;
+					anime = pero_anime[pero];
+				} else {
+					enable("candy");
+					sprite.set_layer("top",
+						image.top_b);
+				}
+			}
+			return anime.playing(ms_pass);
+		}
+		this.image = function ()
+		{
+			return anime.image();
+		}
+	}
+	var pero_anime = new Peropero();
+
 	this.click = function (mouse)
 	{
 		for (var id in all_icon) {
@@ -83,21 +120,8 @@ function Icon()
 			sprite.set_layer("back", image.back3);
 			break;
 		case "candy":
-			sprite.set_layer("top", pero_anime[0]);
-			var pero = 0;
-			var pero_timer = function ()
-			{
-				if (++pero < pero_anime.length) {
-					sprite.set_layer("top",
-						pero_anime[pero]);
-					setTimeout(pero_timer, 2000);
-				} else {
-					enable("candy");
-					sprite.set_layer("top",
-						image.top_b);
-				}
-			}
-			setTimeout(pero_timer, 2000);
+			pero_anime.reset();
+			sprite.set_layer("top", pero_anime);
 			break;
 		}
 	}
