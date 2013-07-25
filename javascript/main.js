@@ -49,9 +49,9 @@ function Icon()
 	var Peropero = function ()
 	{
 		var pero_anime = [
-			new $s.Anime(300, "pero1top1", "pero2top1"),
-			new $s.Anime(300, "pero1top2", "pero2top2"),
-			new $s.Anime(300, "pero1top3", "pero2top3")];
+			new $s.Anime(300, "pero1top1", "pero1top2"),
+			new $s.Anime(300, "pero2top1", "pero2top2"),
+			new $s.Anime(300, "pero3top1", "pero3top2")];
 		for (var i in pero_anime) {
 			pero_anime[i].loop(true);
 		}

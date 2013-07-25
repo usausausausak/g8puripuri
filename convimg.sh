@@ -22,16 +22,16 @@ function conv()
 		make nade1face.png fb f1 h1 nade2m
 		make nade2face.png fb f1 nade2h nade3m
 		make nade3face.png fb f1 nade3h nade3m
-		make meguri_r1bottom.png b ^bp meguri1rsb - megurih1
-		make meguri_r2bottom.png b ^bp meguri2rsb - megurih2
-		make meguri_r3bottom.png b ^bp meguri3sb - megurih3
-		make meguri_l1bottom.png b ^bp meguri1lsb - megurihl1
-		make meguri_l2bottom.png b ^bp meguri2lsb - megurihl2
-		make meguri_l3bottom.png b ^bp meguri3sb - megurihl3
-		make meguri_a1front.png meguria1fr meguria1sfr
-		make meguri_a2front.png meguria2fr meguria2sfr
-		make meguri_a1bottom.png b ^bp meguria1sb
-		make meguri_a2bottom.png b ^bp meguria2sb
+		make meguriR1bottom.png b ^bp meguri1rsb - megurih1
+		make meguriR2bottom.png b ^bp meguri2rsb - megurih2
+		make meguriR3bottom.png b ^bp meguri3sb - megurih3
+		make meguriL1bottom.png b ^bp meguri1lsb - megurihl1
+		make meguriL2bottom.png b ^bp meguri2lsb - megurihl2
+		make meguriL3bottom.png b ^bp meguri3sb - megurihl3
+		make meguriE1front.png meguria1fr meguria1sfr
+		make meguriE2front.png meguria2fr meguria2sfr
+		make meguriE1bottom.png b ^bp meguria1sb
+		make meguriE2bottom.png b ^bp meguria2sb
 		make deko1face.png fb deko1f deko1h deko1m - dekoh2
 		make deko2face.png fb deko2f deko2h deko2m
 		make deko3face.png fb f1 h1 deko3m ^deko3a
@@ -39,11 +39,11 @@ function conv()
 		make deko2back2.png deko2bh2
 		make deko2back3.png deko2bh deko2bh3
 		make pero1top1.png tr ^tp str pero1fr1 ^pero1sfr1 pero1t pero1st
-		make pero1top2.png tr ^tp str pero1fr1 ^pero1sfr2 pero1t pero1st
-		make pero1top3.png tr ^tp str pero1fr1 ^pero1sfr3 pero1t pero1st
-		make pero2top1.png tr ^tp str pero2fr1 ^pero2sfr1 pero2t pero2st
+		make pero2top1.png tr ^tp str pero1fr1 ^pero1sfr2 pero1t pero1st
+		make pero3top1.png tr ^tp str pero1fr1 ^pero1sfr3 pero1t pero1st
+		make pero1top2.png tr ^tp str pero2fr1 ^pero2sfr1 pero2t pero2st
 		make pero2top2.png tr ^tp str pero2fr1 ^pero2sfr2 pero2t pero2st
-		make pero2top3.png tr ^tp str pero2fr1 ^pero2sfr3 pero2t pero2st
+		make pero3top2.png tr ^tp str pero2fr1 ^pero2sfr3 pero2t pero2st
 	done
 	return 0
 }

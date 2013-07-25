@@ -17,14 +17,14 @@ exports.Action = function ()
 		new gamejs.Rect(291, 312, 200, 170)
 	];
 	var left_image = $h.image_list(
-		"meguri_l1bottom", "meguri_l2bottom", "meguri_l3bottom");
+		"meguriL1bottom", "meguriL2bottom", "meguriL3bottom");
 	var right_image = $h.image_list(
-		"meguri_r1bottom", "meguri_r2bottom", "meguri_r3bottom");
+		"meguriR1bottom", "meguriR2bottom", "meguriR3bottom");
 	var anime = {
 		top: new $s.Anime(370, "top_l"),
 		bottom: new $s.Anime(70,
-			"meguri_a1bottom", "meguri_a2bottom", null),
-		front: new $s.Anime(70, "meguri_a1front", "meguri_a2front")
+			"meguriE1bottom", "meguriE2bottom", null),
+		front: new $s.Anime(70, "meguriE1front", "meguriE2front")
 	};
 	anime.bottom.frames[2].wait = 230;
 	anime.front.frames[1].wait = 300;
