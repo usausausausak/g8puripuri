@@ -53,7 +53,7 @@ exports.Action = function ()
 			sec_pass = hold_sec;
 			var back = sprite.get_layer("back");
 			anime.back = hair_anime[back];
-			if ((sprite.flags.candy == undefined) && (++count > 5)) {
+			if ((sprite.flags.candy == undefined) && (++count >= 5)) {
 				sprite.flags.candy = true;
 			}
 		}
