@@ -10,8 +10,8 @@ function conv()
 		make back1.png bh
 		make back2.png bh2
 		make back3.png bh bh3
-		make top_b.png t ^tp st
-		make top_l.png tl ^tp stl
+		make top_b.png tl tr t ^tp stl str st
+		make top_l.png tl t ^tp stl st
 		make bottom1.png b ^bp sb
 		make face1.png fb f1 h1 m1
 		make face2.png fb f1 h1 m2
@@ -38,12 +38,12 @@ function conv()
 		make deko2back1.png deko2bh
 		make deko2back2.png deko2bh2
 		make deko2back3.png deko2bh deko2bh3
-		make pero1top1.png tr ^tp str pero1fr1 ^pero1sfr1 pero1t pero1st
-		make pero2top1.png tr ^tp str pero1fr1 ^pero1sfr2 pero1t pero1st
-		make pero3top1.png tr ^tp str pero1fr1 ^pero1sfr3 pero1t pero1st
-		make pero1top2.png tr ^tp str pero2fr1 ^pero2sfr1 pero2t pero2st
-		make pero2top2.png tr ^tp str pero2fr1 ^pero2sfr2 pero2t pero2st
-		make pero3top2.png tr ^tp str pero2fr1 ^pero2sfr3 pero2t pero2st
+		make pero1top1.png tr t ^tp str st pero1fr1 ^pero1sfr1 pero1t pero1st
+		make pero2top1.png tr t ^tp str st pero1fr1 ^pero1sfr2 pero1t pero1st
+		make pero3top1.png tr t ^tp str st pero1fr1 ^pero1sfr3 pero1t pero1st
+		make pero1top2.png tr t ^tp str st pero2fr1 ^pero2sfr1 pero2t pero2st
+		make pero2top2.png tr t ^tp str st pero2fr1 ^pero2sfr2 pero2t pero2st
+		make pero3top2.png tr t ^tp str st pero2fr1 ^pero2sfr3 pero2t pero2st
 	done
 	return 0
 }
