@@ -38,6 +38,7 @@ function Icon()
 		rt: new gamejs.Rect(5, 560, 50, 50) };
 	all_icon.takusiage = { img: misc.icon_takusiage,
 		rt: new gamejs.Rect(60, 560, 50, 50) };
+	var hair_count = 0;
 
 	var enable = function ()
 	{
@@ -147,6 +148,9 @@ function Icon()
 	this.start_flag = function (id)
 	{
 		sprite.flags[id] = false;
+		if ((id.match(/hair/)) && (++hair_count >= 7)) {
+			sprite.set_flags("hair3");
+		}
 		switch (id) {
 		case "hair1":
 			enable("hair2", "hair3");
@@ -191,7 +195,7 @@ function Icon()
 	this.enable_all = function (sprite)
 	{
 		for (var id in all_icon) {
-			sprite.flags[id] = true;
+			sprite.set_flags(id);
 		}
 	}
 }
