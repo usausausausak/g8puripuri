@@ -51,7 +51,7 @@ exports.Action = function ()
 		sec_pass += ms_pass;
 		cur_rect.width = sec_pass / hold_sec * 100;
 		sprite.playing(ms_pass);
-		display.blit(hand_image[0], $s.Pos());
+		$h.blit_image(display, hand_image[0], $s.Pos());
 		gamejs.draw.rect(display, "rgba(0, 0, 255, 0.3)", bar_rect);
 		gamejs.draw.rect(display, "rgba(0, 0, 255, 0.3)", cur_rect);
 		if (sec_pass >= hold_sec) {
@@ -59,7 +59,7 @@ exports.Action = function ()
 			var back = sprite.get_layer("back");
 			anime.back = hair_anime[back];
 			if (++count >= 5) {
-				sprite.set_flags("candy");
+				sprite.set_flags("pero");
 			}
 			if (sprite.get_layer("bottom").match(/^takusiage/)) {
 				sprite.reset_layer("top");

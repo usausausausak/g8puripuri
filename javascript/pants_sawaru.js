@@ -33,7 +33,7 @@ exports.Action = function ()
 	{
 		if ((sprite.get_layer("bottom").match(/^takusiage/)) &&
 			(rect.collidePoint(mouse))) {
-			display.blit(hand_image[0], $s.Pos());
+			$h.blit_image(display, hand_image[0], $s.Pos());
 		}
 	}
 	this.hint = function (display, sprite, mouse)

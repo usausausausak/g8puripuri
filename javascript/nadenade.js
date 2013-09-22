@@ -30,7 +30,7 @@ exports.Action = function ()
 	this.hover = function (display, sprite, mouse)
 	{
 		if (rect.collidePoint(mouse))
-			display.blit(hand_image[1], $s.Pos());
+			$h.blit_image(display, hand_image[1], $s.Pos());
 	}
 	this.hint = function (display, sprite, mouse)
 	{
@@ -60,7 +60,7 @@ exports.Action = function ()
 		}
 
 		sprite.draw({ "face": image[face] });
-		display.blit(hand_image[hand], $s.Pos());
+		$h.blit_image(display, hand_image[hand], $s.Pos());
 
 		if (hold_pass >= 3000) {
 			sprite.set_flags("hair2");

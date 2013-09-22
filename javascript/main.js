@@ -25,19 +25,19 @@ var mouse = [0, 0];
 function Icon()
 {
 	var image = $s.image_map("back1", "back2", "back3", "top_n");
-	var misc = $h.misc_map("icon_h1", "icon_h2", "icon_h3",
-		"icon_candy", "icon_takusiage");
 	var all_icon = {};
-	all_icon.hair1 = { img: misc.icon_h1,
-		rt: new gamejs.Rect(5, 500, 50, 50) };
-	all_icon.hair2 = { img: misc.icon_h2,
-		rt: new gamejs.Rect(60, 500, 50, 50) };
-	all_icon.hair3 = { img: misc.icon_h3,
-		rt: new gamejs.Rect(120, 500, 50, 50) };
-	all_icon.candy = { img: misc.icon_candy,
-		rt: new gamejs.Rect(5, 560, 50, 50) };
-	all_icon.takusiage = { img: misc.icon_takusiage,
-		rt: new gamejs.Rect(60, 560, 50, 50) };
+	var icons_line = "hair1 hair2 hair3,pero takusiage".split(/,/);
+	for (var i = 0; i < icons_line.length; ++i) {
+		var icons = icons_line[i].split(/ /);
+		for (var j = 0; j < icons.length; ++j) {
+			var id = icons[j];
+			all_icon[id] = {
+				img: $h.load_misc(id),
+				pos: new gamejs.Rect(j * 55,
+					520 + i * 60, 50, 50)
+			};
+		};
+	}
 	var hair_count = 0;
 
 	var enable = function ()
@@ -91,7 +91,7 @@ function Icon()
 					sec_pass = 0;
 					anime = pero_anime[pero];
 				} else {
-					enable("candy", "takusiage");
+					enable("pero", "takusiage");
 					sprite.reset_layer("top");
 					if (++count >= 5) {
 						sprite.set_flags("takusiage");
@@ -136,7 +136,7 @@ function Icon()
 	{
 		for (var id in all_icon) {
 			if ((sprite.flags[id]) &&
-				(all_icon[id].rt.collidePoint(mouse))) {
+				(all_icon[id].pos.collidePoint(mouse))) {
 				this.start_flag(id);
 				break;
 			}
@@ -164,10 +164,10 @@ function Icon()
 			enable("hair1", "hair2");
 			sprite.set_layer("back", image.back3);
 			break;
-		case "candy":
+		case "pero":
 			pero_anime.reset();
 			sprite.set_layer("top", pero_anime);
-			// stop takusiage when candy give
+			// stop takusiage when pero give
 			if (sprite.get_layer("bottom").match(
 				/^takusiage/)) {
 				enable("takusiage");
@@ -188,7 +188,7 @@ function Icon()
 		for (var id in all_icon) {
 			var icon = all_icon[id];
 			if (sprite.flags[id]) {
-				display.blit(icon.img, icon.rt);
+				$h.blit_image(display, icon.img, icon.pos);
 			}
 		}
 	}

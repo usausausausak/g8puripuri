@@ -139,7 +139,7 @@ var Sprite = exports.Sprite = function (display)
 		"bottom": image.bottom1,
 		"front": null
 	};
-	pos = [$h.center_x(layer.back.image()), 0];
+	pos = new gamejs.Rect([$h.CENTER_X, 0, 500, 700]);
 	this.flags = { "hair1": false };
 	this.set_layer = function (lid, image)
 	{
@@ -167,11 +167,13 @@ var Sprite = exports.Sprite = function (display)
 
 	this.playing_layer = function (lid, ms_pass, override)
 	{
+		var img = null;
 		if ((override) && (override[lid])) {
-			display.blit(override[lid], pos);
+			img = override[lid];
 		} else if (layer[lid]) {
-			display.blit(layer[lid].playing(ms_pass), pos);
+			img = layer[lid].playing(ms_pass);
 		}
+		if (img) display.blit(img.img, pos, img.rt);
 	}
 
 	this.draw = function (override)
@@ -185,16 +187,13 @@ var Sprite = exports.Sprite = function (display)
 
 	this.draw_layer = function (lid, override)
 	{
+		var img = null;
 		if ((override) && (override[lid])) {
-			display.blit(override[lid], pos);
+			img = override[lid];
 		} else if (layer[lid]) {
-			display.blit(layer[lid].image(), pos);
+			img = layer[lid].image();
 		}
-	}
-
-	this.blit = function (image)
-	{
-		display.blit(image.image(), pos);
+		if (img) display.blit(img.img, pos, img.rt);
 	}
 
 	this.set_flags = function ()

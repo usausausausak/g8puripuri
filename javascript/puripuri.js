@@ -33,9 +33,9 @@ exports.Action = function ()
 	this.hover = function (display, sprite, mouse)
 	{
 		if (left_rect.collidePoint(mouse)) {
-			display.blit(hand_image[0], $s.Pos());
+			$h.blit_image(display, hand_image[0], $s.Pos());
 		} else if (right_rect.collidePoint(mouse)) {
-			display.blit(hand_image[0], $s.Pos());
+			$h.blit_image(display, hand_image[0], $s.Pos());
 		}
 	}
 	this.hint = function (display, sprite, mouse)
