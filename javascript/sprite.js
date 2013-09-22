@@ -132,11 +132,23 @@ var Sprite = exports.Sprite = function (display)
 		"bottom": image.bottom1,
 		"front": null
 	};
+	var layer_base = {
+		"back": image.back1,
+		"face": face_anime,
+		"top": image.top_b,
+		"bottom": image.bottom1,
+		"front": null
+	};
 	pos = [$h.center_x(layer.back.image()), 0];
 	this.flags = { "hair1": false };
 	this.set_layer = function (lid, image)
 	{
 		layer[lid] = image;
+	}
+
+	this.reset_layer = function (lid)
+	{
+		layer[lid] = layer_base[lid];
 	}
 
 	this.get_layer = function (lid)
@@ -179,8 +191,20 @@ var Sprite = exports.Sprite = function (display)
 			display.blit(layer[lid].image(), pos);
 		}
 	}
+
 	this.blit = function (image)
 	{
 		display.blit(image.image(), pos);
 	}
+
+	this.set_flags = function ()
+	{
+		for (var i in arguments) {
+			var id = arguments[i];
+			if (this.flags[id] == undefined) {
+				this.flags[id] = true;
+			}
+		}
+	}
+
 }

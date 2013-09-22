@@ -13,7 +13,7 @@ exports.Action = function ()
 	var hold_pass = 0;
 	var mouse_start = [0, 0];
 	this.active = false;
-	this.start = function (mouse)
+	this.start = function (sprite, mouse)
 	{
 		$h.mouse_copy(mouse_start, mouse);
 		return rect.collidePoint(mouse);
@@ -62,8 +62,8 @@ exports.Action = function ()
 		sprite.draw({ "face": image[face] });
 		display.blit(hand_image[hand], $s.Pos());
 
-		if ((sprite.flags.hair2 == undefined) && (hold_pass >= 3000)) {
-			sprite.flags.hair2 = true;
+		if (hold_pass >= 3000) {
+			sprite.set_flags("hair2");
 		}
 		return true;
 	}

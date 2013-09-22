@@ -5,7 +5,8 @@ var $a = {
 	"Puripuri": require("puripuri").Action,
 	"Nadenade": require("nadenade").Action,
 	"Meguri": require("meguri").Action,
-	"Dekopin": require("dekopin").Action
+	"Dekopin": require("dekopin").Action,
+	"PantsSawaru": require("pants_sawaru").Action
 }
 
 var $img_list = require("img_list");
@@ -23,9 +24,9 @@ var mouse = [0, 0];
 
 function Icon()
 {
-	var image = $s.image_map("back1", "back2", "back3", "top_b");
+	var image = $s.image_map("back1", "back2", "back3", "top_n");
 	var misc = $h.misc_map("icon_h1", "icon_h2", "icon_h3",
-		"icon_candy");
+		"icon_candy", "icon_takusiage");
 	var all_icon = {};
 	all_icon.hair1 = { img: misc.icon_h1,
 		rt: new gamejs.Rect(5, 500, 50, 50) };
@@ -35,6 +36,8 @@ function Icon()
 		rt: new gamejs.Rect(120, 500, 50, 50) };
 	all_icon.candy = { img: misc.icon_candy,
 		rt: new gamejs.Rect(5, 560, 50, 50) };
+	all_icon.takusiage = { img: misc.icon_takusiage,
+		rt: new gamejs.Rect(60, 560, 50, 50) };
 
 	var enable = function ()
 	{
@@ -42,6 +45,16 @@ function Icon()
 			var id = arguments[i];
 			if (sprite.flags[id] != undefined) {
 				sprite.flags[id] = true;
+			}
+		}
+	}
+
+	var disable = function ()
+	{
+		for (var i in arguments) {
+			var id = arguments[i];
+			if (sprite.flags[id] != undefined) {
+				sprite.flags[id] = false;
 			}
 		}
 	}
@@ -57,6 +70,7 @@ function Icon()
 		}
 		var sec_pass = 0;
 		var pero = 0;
+		var count = 0;
 		var anime = pero_anime[0];
 		this.id = "pero";
 		this.reset = function ()
@@ -76,9 +90,11 @@ function Icon()
 					sec_pass = 0;
 					anime = pero_anime[pero];
 				} else {
-					enable("candy");
-					sprite.set_layer("top",
-						image.top_b);
+					enable("candy", "takusiage");
+					sprite.reset_layer("top");
+					if (++count >= 5) {
+						sprite.set_flags("takusiage");
+					}
 				}
 			}
 			return anime.playing(ms_pass);
@@ -89,6 +105,31 @@ function Icon()
 		}
 	}
 	var pero_anime = new Peropero();
+	var Takusiage = function ()
+	{
+		var sec_pass = 0;
+		var anime = new $s.Image("takusiagebottom");
+		this.id = "takusiage";
+		this.reset = function ()
+		{
+			sec_pass = 0;
+		}
+		this.playing = function (ms_pass)
+		{
+			sec_pass += ms_pass;
+			if (sec_pass >= 10000) {
+				enable("takusiage");
+				sprite.reset_layer("top");
+				sprite.reset_layer("bottom");
+			}
+			return anime.playing(ms_pass);
+		}
+		this.image = function ()
+		{
+			return anime.image();
+		}
+	}
+	var takusiae_anime = new Takusiage();
 
 	this.click = function (mouse)
 	{
@@ -122,6 +163,18 @@ function Icon()
 		case "candy":
 			pero_anime.reset();
 			sprite.set_layer("top", pero_anime);
+			// stop takusiage when candy give
+			if (sprite.get_layer("bottom").match(
+				/^takusiage/)) {
+				enable("takusiage");
+				sprite.reset_layer("bottom");
+			}
+			disable("takusiage");
+			break;
+		case "takusiage":
+			takusiae_anime.reset();
+			sprite.set_layer("top", image.top_n);
+			sprite.set_layer("bottom", takusiae_anime);
 			break;
 		}
 	}
@@ -147,7 +200,7 @@ function Futuu()
 {
 	var icon = new Icon();
 	this.active = false;
-	this.start = function (mouse)
+	this.start = function (sprite, mouse)
 	{
 		icon.click(mouse);
 		return false;
@@ -174,7 +227,7 @@ function Futuu()
 function EndAnime(sprite_anime)
 {
 	sprite_anime.reset();
-	this.start = function (mouse) { return true; }
+	this.start = function (sprite, mouse) { return true; }
 	this.end = function () {}
 	this.update = function (display, sprite, mouse, ms_pass)
 	{
@@ -189,6 +242,7 @@ function init_action()
 	all_action.push(new $a.Nadenade());
 	all_action.push(new $a.Meguri());
 	all_action.push(new $a.Dekopin());
+	all_action.push(new $a.PantsSawaru());
 	all_action.push(futuu = new Futuu());
 }
 
@@ -212,7 +266,7 @@ function start_mouse(mouse_id, mouse)
 	if (running.id) return;
 	for (var i in all_action) {
 		var action = all_action[i];
-		if ((!action.active) && (action.start(mouse))) {
+		if ((!action.active) && (action.start(sprite, mouse))) {
 			action.active = true;
 			running.id = mouse_id;
 			running.action = action;

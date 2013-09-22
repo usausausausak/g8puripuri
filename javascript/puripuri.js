@@ -11,7 +11,7 @@ exports.Action = function ()
 	var is_right = false;
 	var mouse_start = [0, 0];
 	this.active = false;
-	this.start = function (mouse)
+	this.start = function (sprite, mouse)
 	{
 		if (left_rect.collidePoint(mouse)) {
 			$h.mouse_copy(mouse_start, mouse);

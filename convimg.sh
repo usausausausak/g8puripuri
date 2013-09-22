@@ -10,6 +10,7 @@ function conv()
 		make back1.png bh
 		make back2.png bh2
 		make back3.png bh bh3
+		make top_n.png t ^tp st
 		make top_b.png tl tr t ^tp stl str st
 		make top_l.png tl t ^tp stl st
 		make bottom1.png b ^bp sb
@@ -44,6 +45,9 @@ function conv()
 		make pero1top2.png tr t ^tp str st pero2fr1 ^pero2sfr1 pero2t pero2st
 		make pero2top2.png tr t ^tp str st pero2fr1 ^pero2sfr2 pero2t pero2st
 		make pero3top2.png tr t ^tp str st pero2fr1 ^pero2sfr3 pero2t pero2st
+		make takusiagebottom.png b ^bp meguri3sb takusiagefr takusiagesfr
+		make takusiageE1bottom.png b ^bp takusiagea1sb takusiagea1fr takusiagea1sfr - pantssawaruh2
+		make takusiageE2bottom.png b ^bp sb takusiagea1fr takusiagea1sfr
 	done
 	return 0
 }

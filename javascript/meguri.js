@@ -47,9 +47,11 @@ exports.Action = function ()
 		return 0;
 	}
 	this.active = false;
-	this.start = function (mouse)
+	this.start = function (sprite, mouse)
 	{
-		if (right_rects[1].collidePoint(mouse)) {
+		if (sprite.get_layer("bottom").match(/^takusiage/)) {
+			return false;
+		} else if (right_rects[1].collidePoint(mouse)) {
 			$h.mouse_copy(mouse_start, mouse);
 			rects = right_rects;
 			image = right_image;
@@ -73,8 +75,10 @@ exports.Action = function ()
 	}
 	this.hint = function (display, sprite, mouse)
 	{
-		$h.draw_hints_rect(display, left_rects);
-		$h.draw_hints_rect(display, right_rects);
+		if (!sprite.get_layer("bottom").match(/^takusiage/)) {
+			$h.draw_hints_rect(display, left_rects);
+			$h.draw_hints_rect(display, right_rects);
+		}
 	}
 	this.update = function (display, sprite, mouse, ms_pass)
 	{

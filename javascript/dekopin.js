@@ -29,7 +29,7 @@ exports.Action = function ()
 	var mouse_start = [0, 0];
 	var count = 0;
 	this.active = false;
-	this.start = function (mouse)
+	this.start = function (sprite, mouse)
 	{
 		$h.mouse_copy(mouse_start, mouse);
 		return rect.collidePoint(mouse);
@@ -53,8 +53,8 @@ exports.Action = function ()
 			sec_pass = hold_sec;
 			var back = sprite.get_layer("back");
 			anime.back = hair_anime[back];
-			if ((sprite.flags.candy == undefined) && (++count >= 5)) {
-				sprite.flags.candy = true;
+			if (++count >= 5) {
+				sprite.set_flags("candy");
 			}
 		}
 		cur_rect.width = sec_pass / hold_sec * 100;
