@@ -93,7 +93,7 @@ function Icon()
 				} else {
 					enable("pero", "takusiage");
 					sprite.reset_layer("top");
-					if (++count >= 5) {
+					if (++count >= 3) {
 						sprite.set_flags("takusiage");
 					}
 				}
