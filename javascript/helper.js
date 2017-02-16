@@ -128,18 +128,3 @@ var draw_hints_rect = exports.draw_hints_rect = function (display, rect)
 		gamejs.draw.rect(display, "rgba(255, 0, 0, 0.2)", rect);
 	}
 }
-
-var argv = exports.argv = {};
-var args = document.location.hash.substr(1).split(/,/);
-for (var i in args) {
-	switch (args[i]) {
-	case "hints": argv.show_hints = true; break;
-	case "debug":
-		argv.debug = true;
-		argv.show_hints = true;
-		break;
-	case "mono": argv.mono = true; break;
-	case "bg": argv.bg = true; break;
-	}
-}
-

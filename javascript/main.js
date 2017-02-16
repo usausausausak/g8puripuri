@@ -17,7 +17,7 @@ var sprite = null;
 var bg_sprite = null;
 var futuu = null;
 var all_action = [];
-var argv = $h.argv;
+var setting = {};
 
 var running = { id: "", mouse: [0, 0], action: null };
 var mouse = [0, 0];
@@ -250,14 +250,14 @@ function init_action()
 	all_action.push(futuu = new Futuu());
 }
 
-function draw_hint(display)
+function draw_hint(display, show_hints)
 {
 	for (var i in all_action) {
 		var action = all_action[i];
 		if (action.hover)
 			action.hover(display, sprite, mouse);
 	}
-	if (argv.show_hints) {
+	if (show_hints) {
 		for (var i in all_action) {
 			var action = all_action[i];
 			action.hint(display, sprite, mouse);
@@ -336,6 +336,25 @@ function init_touch()
 	document.addEventListener("touchmove", touch_move, false);
 }
 
+function change_setting()
+{
+    setting = {};
+	let argv = document.location.hash.substr(1).split(/,/);
+	for (let v of argv) {
+		switch (v) {
+			case "hints": setting.show_hints = true; break;
+			case "debug":
+				      setting.debug = true;
+				      setting.show_hints = true;
+				      break;
+			case "mono": setting.mono = true; break;
+			case "bg": setting.bg = true; break;
+		}
+	}
+	if (setting.debug) futuu.enable_all(sprite);
+}
+
+
 function main()
 {
 	font = new gamejs.font.Font('20px monospace');
@@ -357,8 +376,7 @@ function main()
 	});
 
 	sprite = new $s.Sprite(display);
-	if (argv.bg) bg_sprite = gamejs.image.load("./imagemisc/bg.jpg");
-	if (argv.debug) futuu.enable_all(sprite);
+	bg_sprite = gamejs.image.load("./imagemisc/bg.jpg");
 
 	var fps_sec = 0, fps = 0, fps_last = 0;
 	running.action = futuu;
@@ -373,13 +391,13 @@ function main()
 		}
 		// update
 		display.clear();
-		if (bg_sprite) display.blit(bg_sprite);
+		if (setting.bg) display.blit(bg_sprite);
 		update_running(display, sprite, ms_pass);
 		if (running.id == "") {
-			draw_hint(display);
+			draw_hint(display, setting.show_hints);
 		}
 		futuu.draw_icon(display);
-		if (argv.debug) {
+		if (setting.debug) {
 			display.blit(font.render("fps: " + fps_last));
 			display.blit(font.render(running.mouse), [0, 20]);
 			var pos = [0, 40];
@@ -393,5 +411,9 @@ function main()
 	});
 };
 
-gamejs.preload((argv.mono) ? $img_list.mono : $img_list.color);
+// init setting
+change_setting();
+window.addEventListener("hashchange", change_setting, false);
+
+gamejs.preload((setting.mono) ? $img_list.mono : $img_list.color);
 gamejs.ready(main);
