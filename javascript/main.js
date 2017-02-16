@@ -4,7 +4,7 @@ let $s = require("sprite");
 let $a = {
     "Puripuri": require("puripuri").Action,
     "Nadenade": require("nadenade").Action,
-    "Meguri": require("meguri").Action,
+    "Mekuri": require("mekuri").Action,
     "Dekopin": require("dekopin").Action,
     "PantsSawaru": require("pants_sawaru").Action
 }
@@ -270,7 +270,7 @@ function init_actions()
     futuu = new Futuu();
     actions.push(new $a.Puripuri());
     actions.push(new $a.Nadenade());
-    actions.push(new $a.Meguri());
+    actions.push(new $a.Mekuri());
     actions.push(new $a.Dekopin());
     actions.push(new $a.PantsSawaru());
     actions.push(futuu);

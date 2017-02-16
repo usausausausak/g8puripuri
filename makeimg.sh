@@ -17,9 +17,9 @@ function make_img()
 		make bottom.png "bottom1"
 		make puri_face.png "puri1face puri2face puri3face"
 		make nade_face.png "nade1face nade2face nade3face"
-		make meguri_left.png "meguriL1bottom meguriL2bottom meguriL3bottom"
-		make meguri_right.png "meguriR1bottom meguriR2bottom meguriR3bottom"
-		make meguri_end.png "meguriE1front meguriE2front meguriE1bottom meguriE2bottom"
+		make mekuri_left.png "mekuriL1bottom mekuriL2bottom mekuriL3bottom"
+		make mekuri_right.png "mekuriR1bottom mekuriR2bottom mekuriR3bottom"
+		make mekuri_end.png "mekuriE1front mekuriE2front mekuriE1bottom mekuriE2bottom"
 		make deko_face.png "deko1face deko2face deko3face"
 		make deko_back.png "deko2back1 deko2back2 deko2back3"
 		make pero_top.png "pero1top1 pero2top1 pero3top1 pero1top2 pero2top2 pero3top2"
@@ -84,16 +84,16 @@ function conv_img()
 		conv nade1face.png fb f1 h1 nade2m
 		conv nade2face.png fb f1 nade2h nade3m
 		conv nade3face.png fb f1 nade3h nade3m
-		conv meguriR1bottom.png b ^bp meguri1rsb - megurih1
-		conv meguriR2bottom.png b ^bp meguri2rsb - megurih2
-		conv meguriR3bottom.png b ^bp meguri3sb - megurih3
-		conv meguriL1bottom.png b ^bp meguri1lsb - megurihl1
-		conv meguriL2bottom.png b ^bp meguri2lsb - megurihl2
-		conv meguriL3bottom.png b ^bp meguri3sb - megurihl3
-		conv meguriE1front.png meguria1fr meguria1sfr
-		conv meguriE2front.png meguria2fr meguria2sfr
-		conv meguriE1bottom.png b ^bp meguria1sb
-		conv meguriE2bottom.png b ^bp meguria2sb
+		conv mekuriR1bottom.png b ^bp mekuri1rsb - mekurih1
+		conv mekuriR2bottom.png b ^bp mekuri2rsb - mekurih2
+		conv mekuriR3bottom.png b ^bp mekuri3sb - mekurih3
+		conv mekuriL1bottom.png b ^bp mekuri1lsb - mekurihl1
+		conv mekuriL2bottom.png b ^bp mekuri2lsb - mekurihl2
+		conv mekuriL3bottom.png b ^bp mekuri3sb - mekurihl3
+		conv mekuriE1front.png mekuria1fr mekuria1sfr
+		conv mekuriE2front.png mekuria2fr mekuria2sfr
+		conv mekuriE1bottom.png b ^bp mekuria1sb
+		conv mekuriE2bottom.png b ^bp mekuria2sb
 		conv deko1face.png fb deko1f deko1h deko1m - dekoh2
 		conv deko2face.png fb deko2f deko2h deko2m
 		conv deko3face.png fb f1 h1 deko3m ^deko3a
@@ -106,7 +106,7 @@ function conv_img()
 		conv pero1top2.png tr t ^tp str st pero2fr1 ^pero2sfr1 pero2t pero2st
 		conv pero2top2.png tr t ^tp str st pero2fr1 ^pero2sfr2 pero2t pero2st
 		conv pero3top2.png tr t ^tp str st pero2fr1 ^pero2sfr3 pero2t pero2st
-		conv takusiagebottom.png b ^bp meguri3sb takusiagefr takusiagesfr
+		conv takusiagebottom.png b ^bp mekuri3sb takusiagefr takusiagesfr
 		conv takusiageE1bottom.png b ^bp takusiagea1sb takusiagea1fr takusiagea1sfr - pantssawaruh2
 		conv takusiageE2bottom.png b ^bp sb takusiagea1fr takusiagea1sfr
 	done
@@ -208,6 +208,7 @@ function print_preload()
 	ls -CQ ./imagemisc/* | tac | sed 's/\s\s*/, /g;2,$s/$/, /' | tac
 	echo '];'
 	cat << DOC
+// Auto generated file
 var img_data = exports.image_data = {};
 var misc_data = exports.misc_data = {};
 DOC
