@@ -1,414 +1,457 @@
-var gamejs = require("gamejs");
-var $h = require("helper");
-var $s = require("sprite");
-var $a = {
-	"Puripuri": require("puripuri").Action,
-	"Nadenade": require("nadenade").Action,
-	"Meguri": require("meguri").Action,
-	"Dekopin": require("dekopin").Action,
-	"PantsSawaru": require("pants_sawaru").Action
+let gamejs = require("gamejs");
+let $h = require("helper");
+let $s = require("sprite");
+let $a = {
+    "Puripuri": require("puripuri").Action,
+    "Nadenade": require("nadenade").Action,
+    "Meguri": require("meguri").Action,
+    "Dekopin": require("dekopin").Action,
+    "PantsSawaru": require("pants_sawaru").Action
 }
 
-var $img_list = require("img_list");
-var MOUSE_ID = "mouse";
+let $img_list = require("img_list");
 
-var font = null;
-var sprite = null;
-var bg_sprite = null;
-var futuu = null;
-var all_action = [];
-var setting = {};
+let DEVICE_ID_NONE = "no-device";
+let DEVICE_ID_MOUSE = "mouse";
 
-var running = { id: "", mouse: [0, 0], action: null };
-var mouse = [0, 0];
+let sprite = null;
+let futuu = null;
+let actions = [];
 
-function Icon()
+let setting = new Map();
+let running = { device_id: DEVICE_ID_NONE, device_pos: [0, 0], action: null };
+
+function Parts()
 {
-	var image = $s.image_map("back1", "back2", "back3", "top_n");
-	var all_icon = {};
-	var icons_line = "hair1 hair2 hair3,pero takusiage".split(/,/);
-	for (var i = 0; i < icons_line.length; ++i) {
-		var icons = icons_line[i].split(/ /);
-		for (var j = 0; j < icons.length; ++j) {
-			var id = icons[j];
-			all_icon[id] = {
-				img: $h.load_misc(id),
-				pos: new gamejs.Rect(j * 55,
-					520 + i * 60, 50, 50)
-			};
-		};
-	}
-	var hair_count = 0;
+    let image_map = $s.new_image_map("back1", "back2", "back3", "top_n");
 
-	var enable = function ()
-	{
-		for (var i in arguments) {
-			var id = arguments[i];
-			if (sprite.flags[id] != undefined) {
-				sprite.flags[id] = true;
-			}
-		}
-	}
+    let icon_map = {};
+    let icon_lines = "hair1 hair2 hair3,pero takusiage".split(/,/);
+    for (let i = 0; i < icon_lines.length; ++i) {
+        let icons = icon_lines[i].split(/ /);
+        for (let j = 0; j < icons.length; ++j) {
+            let id = icons[j];
+            icon_map[id] = {
+                img: $h.load_misc(id),
+                pos: new gamejs.Rect(j * 55, 520 + i * 60, 50, 50)
+            };
+        };
+    }
 
-	var disable = function ()
-	{
-		for (var i in arguments) {
-			var id = arguments[i];
-			if (sprite.flags[id] != undefined) {
-				sprite.flags[id] = false;
-			}
-		}
-	}
+    let counts = {"hair": 0,
+                  "pero": 0,
+                  "takusiage": 0};
 
-	var Peropero = function ()
-	{
-		var pero_anime = [
-			new $s.Anime(300, "pero1top1", "pero1top2"),
-			new $s.Anime(300, "pero2top1", "pero2top2"),
-			new $s.Anime(300, "pero3top1", "pero3top2")];
-		for (var i in pero_anime) {
-			pero_anime[i].loop(true);
-		}
-		var sec_pass = 0;
-		var pero = 0;
-		var count = 0;
-		var anime = pero_anime[0];
-		this.id = "pero";
-		this.reset = function ()
-		{
-			sec_pass = 0;
-			pero = 0;
-			anime = pero_anime[0];
-			for (var i in pero_anime) {
-				pero_anime[i].reset();
-			}
-		}
-		this.playing = function (ms_pass)
-		{
-			sec_pass += ms_pass;
-			if (sec_pass >= 2000) {
-				if (++pero < pero_anime.length) {
-					sec_pass = 0;
-					anime = pero_anime[pero];
-				} else {
-					enable("pero", "takusiage");
-					sprite.reset_layer("top");
-					if (++count >= 3) {
-						sprite.set_flags("takusiage");
-					}
-				}
-			}
-			return anime.playing(ms_pass);
-		}
-		this.image = function ()
-		{
-			return anime.image();
-		}
-	}
-	var pero_anime = new Peropero();
-	var Takusiage = function ()
-	{
-		var sec_pass = 0;
-		var anime = new $s.Image("takusiagebottom");
-		this.id = "takusiage";
-		this.reset = function ()
-		{
-			sec_pass = 0;
-		}
-		this.playing = function (ms_pass)
-		{
-			sec_pass += ms_pass;
-			if (sec_pass >= 10000) {
-				enable("takusiage");
-				sprite.reset_layer("top");
-				sprite.reset_layer("bottom");
-			}
-			return anime.playing(ms_pass);
-		}
-		this.image = function ()
-		{
-			return anime.image();
-		}
-	}
-	var takusiae_anime = new Takusiage();
+    // only enable/disable parts if it is set
+    let enable = function (...ids)
+    {
+        let v = ids.filter(id => sprite.is_flag_visible(id));
+        sprite.set_flag.apply(sprite, v);
+    }
 
-	this.click = function (mouse)
-	{
-		for (var id in all_icon) {
-			if ((sprite.flags[id]) &&
-				(all_icon[id].pos.collidePoint(mouse))) {
-				this.start_flag(id);
-				break;
-			}
-		}
-	}
+    let disable = function (...ids)
+    {
+        let v = ids.filter(id => sprite.is_flag_visible(id));
+        sprite.unset_flag.apply(sprite, v);
+    }
 
-	this.update = function () { }
+    // like a Anime
+    let Peropero = function ()
+    {
+        let pero_animes = [
+            new $s.Anime(300, "pero1top1", "pero1top2"),
+            new $s.Anime(300, "pero2top1", "pero2top2"),
+            new $s.Anime(300, "pero3top1", "pero3top2")
+        ];
+        pero_animes.forEach(a => a.loop(true));
 
-	this.start_flag = function (id)
-	{
-		sprite.flags[id] = false;
-		if ((id.match(/hair/)) && (++hair_count >= 7)) {
-			sprite.set_flags("hair3");
-		}
-		switch (id) {
-		case "hair1":
-			enable("hair2", "hair3");
-			sprite.set_layer("back", image.back1);
-			break;
-		case "hair2":
-			enable("hair1", "hair3");
-			sprite.set_layer("back", image.back2);
-			break;
-		case "hair3":
-			enable("hair1", "hair2");
-			sprite.set_layer("back", image.back3);
-			break;
-		case "pero":
-			pero_anime.reset();
-			sprite.set_layer("top", pero_anime);
-			// stop takusiage when pero give
-			if (sprite.get_layer("bottom").match(
-				/^takusiage/)) {
-				enable("takusiage");
-				sprite.reset_layer("bottom");
-			}
-			disable("takusiage");
-			break;
-		case "takusiage":
-			takusiae_anime.reset();
-			sprite.set_layer("top", image.top_n);
-			sprite.set_layer("bottom", takusiae_anime);
-			break;
-		}
-	}
+        let sec_pass = 0;
+        let pero = 0;
+        let count = 0;
+        let anime = pero_animes[0];
 
-	this.draw = function (display)
-	{
-		for (var id in all_icon) {
-			var icon = all_icon[id];
-			if (sprite.flags[id]) {
-				$h.blit_image(display, icon.img, icon.pos);
-			}
-		}
-	}
-	this.enable_all = function (sprite)
-	{
-		for (var id in all_icon) {
-			sprite.set_flags(id);
-		}
-	}
+        this.id = "pero";
+
+        this.reset = function ()
+        {
+            sec_pass = 0;
+            pero = 0;
+            anime = pero_animes[0];
+            pero_animes.forEach(a => a.reset());
+        }
+
+        this.playing = function (ms_pass)
+        {
+            sec_pass += ms_pass;
+            if (sec_pass >= 2000) {
+                if (++pero < pero_animes.length) {
+                    sec_pass = 0;
+                    anime = pero_animes[pero];
+                } else {
+                    enable("pero", "takusiage");
+                    sprite.reset_layer("top");
+                    if (++count >= 3) {
+                        sprite.enable_flag("takusiage");
+                    }
+                }
+            }
+            return anime.playing(ms_pass);
+        }
+
+        this.image = function ()
+        {
+            return anime.image();
+        }
+    }
+    let pero_anime = new Peropero();
+
+    // like a Anime
+    let Takusiage = function ()
+    {
+        let sec_pass = 0;
+        let anime = new $s.Image("takusiagebottom");
+
+        this.id = "takusiage";
+
+        this.reset = function ()
+        {
+            sec_pass = 0;
+        }
+
+        this.playing = function (ms_pass)
+        {
+            sec_pass += ms_pass;
+            if (sec_pass >= 10000) {
+                enable("takusiage");
+                sprite.reset_layer("top");
+                sprite.reset_layer("bottom");
+            }
+            return anime.playing(ms_pass);
+        }
+
+        this.image = function ()
+        {
+            return anime.image();
+        }
+    }
+    let takusiae_anime = new Takusiage();
+
+    this.update = function () { }
+
+    this.change = function (id)
+    {
+        sprite.unset_flag(false, id);
+        switch (id) {
+        case "hair1":
+            counts.hair++;
+            enable("hair2", "hair3");
+            sprite.set_layer("back", image_map.back1);
+            break;
+        case "hair2":
+            counts.hair++;
+            enable("hair1", "hair3");
+            sprite.set_layer("back", image_map.back2);
+            break;
+        case "hair3":
+            counts.hair++;
+            enable("hair1", "hair2");
+            sprite.set_layer("back", image_map.back3);
+            break;
+        case "pero":
+            counts.pero++;
+            pero_anime.reset();
+            sprite.set_layer("top", pero_anime);
+
+            // stop takusiage when pero give
+            if (sprite.get_layer("bottom").match(/^takusiage/)) {
+                enable("takusiage");
+                sprite.reset_layer("bottom");
+            }
+            disable("takusiage");
+            break;
+        case "takusiage":
+            counts.takusiage++;
+            takusiae_anime.reset();
+            sprite.set_layer("top", image_map.top_n);
+            sprite.set_layer("bottom", takusiae_anime);
+            break;
+        }
+
+        if (counts.hair >= 7) {
+            sprite.enable_flag("hair3");
+        }
+    }
+
+    this.click = function (device_pos)
+    {
+        let ids = Object.keys(icon_map).filter(id => sprite.is_flag_set(id));
+        for (let id of ids) {
+            let icon = icon_map[id];
+            if (icon.pos.collidePoint(device_pos)) {
+                this.change(id);
+                break;
+            }
+        }
+    }
+
+    this.draw_icons = function (display)
+    {
+        for (let id in icon_map) {
+            let icon = icon_map[id];
+            if (sprite.is_flag_set(id)) {
+                $h.blit_image(display, icon.img, icon.pos);
+            }
+        }
+    }
+
+    this.enable_all = function (sprite)
+    {
+        for (let id in icon_map) {
+            sprite.enable_flag(id);
+        }
+    }
 }
 
 function Futuu()
 {
-	var icon = new Icon();
-	this.active = false;
-	this.start = function (sprite, mouse)
-	{
-		icon.click(mouse);
-		return false;
-	}
-	this.end = function () { }
-	this.hint = function (display, sprite, mouse) { }
-	this.update = function (display, sprite, mouse, ms_pass)
-	{
-		sprite.playing(ms_pass);
-		return true;
-	}
+    let parts = new Parts();
+    this.active = false;
+    this.start = function (sprite, device_pos)
+    {
+        parts.click(device_pos);
+        return false;
+    }
 
-	this.draw_icon = function (display)
-	{
-		icon.draw(display);
-	}
+    this.end = function () { }
+    this.hint = function (display, sprite, device_pos) { }
 
-	this.enable_all = function (sprite)
-	{
-		icon.enable_all(sprite);
-	}
+    this.update = function (display, sprite, device_pos, ms_pass)
+    {
+        sprite.playing(ms_pass);
+        return true;
+    }
+
+    this.draw_icons = function (display)
+    {
+        parts.draw_icons(display);
+    }
+
+    this.enable_all = function (sprite)
+    {
+        parts.enable_all(sprite);
+    }
 }
 
 function EndAnime(sprite_anime)
 {
-	sprite_anime.reset();
-	this.start = function (sprite, mouse) { return true; }
-	this.end = function () {}
-	this.update = function (display, sprite, mouse, ms_pass)
-	{
-		sprite.draw(sprite_anime.playing(ms_pass));
-		return (!sprite_anime.end);
-	}
+    sprite_anime.reset();
+    this.start = function (sprite, device_pos) {
+        return true;
+    }
+
+    this.end = function () {}
+
+    this.update = function (display, sprite, device_pos, ms_pass)
+    {
+        sprite.draw(sprite_anime.playing(ms_pass));
+        return (!sprite_anime.end);
+    }
 }
 
-function init_action()
+function init_actions()
 {
-	all_action.push(new $a.Puripuri());
-	all_action.push(new $a.Nadenade());
-	all_action.push(new $a.Meguri());
-	all_action.push(new $a.Dekopin());
-	all_action.push(new $a.PantsSawaru());
-	all_action.push(futuu = new Futuu());
+    futuu = new Futuu();
+    actions.push(new $a.Puripuri());
+    actions.push(new $a.Nadenade());
+    actions.push(new $a.Meguri());
+    actions.push(new $a.Dekopin());
+    actions.push(new $a.PantsSawaru());
+    actions.push(futuu);
 }
 
-function draw_hint(display, show_hints)
+function draw_hint(display, device_pos, show_hints)
 {
-	for (var i in all_action) {
-		var action = all_action[i];
-		if (action.hover)
-			action.hover(display, sprite, mouse);
-	}
-	if (show_hints) {
-		for (var i in all_action) {
-			var action = all_action[i];
-			action.hint(display, sprite, mouse);
-		}
-	}
+    for (let action of actions) {
+        if (action.hover) {
+            action.hover(display, sprite, device_pos);
+        }
+    }
+    if (show_hints) {
+        for (let action of actions) {
+            action.hint(display, sprite, device_pos);
+        }
+    }
 }
 
-function start_mouse(mouse_id, mouse)
+function input_start(device_id, device_pos)
 {
-	if (running.id) return;
-	for (var i in all_action) {
-		var action = all_action[i];
-		if ((!action.active) && (action.start(sprite, mouse))) {
-			action.active = true;
-			running.id = mouse_id;
-			running.action = action;
-			$h.mouse_copy(running.mouse, mouse);
-			break;
-		}
-	}
+    if (running.device_id !== DEVICE_ID_NONE) {
+        return;
+    }
+
+    for (let action of actions) {
+        if ((!action.active) && (action.start(sprite, device_pos))) {
+            action.active = true;
+            running.device_id = device_id;
+            running.action = action;
+            $h.pos_assign(running.device_pos, device_pos);
+            break;
+        }
+    }
 }
 
-function update_mouse(mouse_id, pos)
+function input_update(device_id, device_pos)
 {
-	if (running.id != mouse_id) return;
-	$h.mouse_copy(running.mouse, pos);
+    if ((running.device_id === DEVICE_ID_NONE) ||
+        (running.device_id === device_id)) {
+        $h.pos_assign(running.device_pos, device_pos);
+    }
 }
 
-function end_mouse(mouse_id)
+function input_end(device_id)
 {
-	if (running.id != mouse_id) return;
-	var end_anime = running.action.end();
-	running.action = (end_anime) ? new EndAnime(end_anime) : futuu;
-	running.id = "";
-}
+    if (running.device_id !== device_id) {
+        return;
+    }
 
-function update_running(display, sprite, ms_pass)
-{
-	if (!running.action.update(display, sprite,
-		running.mouse, ms_pass)) {
-		end_mouse(running.id);
-	}
+    let end_anime = running.action.end(sprite);
+    running.action = (end_anime) ? new EndAnime(end_anime) : futuu;
+    running.device_id = DEVICE_ID_NONE;
 }
 
 function init_touch()
 {
-	var displayCanvas = document.getElementById("gjs-canvas");
-	function getCanvasOffset () {
-		var boundRect = displayCanvas.getBoundingClientRect();
-		return [boundRect.left, boundRect.top];
-	}
-	function touch_start(ev){
-		ev.preventDefault();
-		var canvasOffset = getCanvasOffset();
-		var touch = ev.touches[0];
-		var mouse = [
-			touch.clientX - canvasOffset[0],
-			touch.clientY - canvasOffset[1]];
-		start_mouse(touch.identifier, mouse);
-	}
-	function touch_end(ev){
-		var touch = ev.changedTouches[0];
-		end_mouse(touch.identifier);
-	}
-	function touch_move(ev){
-		ev.preventDefault();
-		var canvasOffset = getCanvasOffset();
-		var touch = ev.touches[0];
-		var mouse = [
-			touch.clientX - canvasOffset[0],
-			touch.clientY - canvasOffset[1]];
-		update_mouse(touch.identifier, mouse);
-	}
-	document.addEventListener("touchstart", touch_start, false);
-	document.addEventListener("touchend", touch_end, false);
-	document.addEventListener("touchmove", touch_move, false);
+    let displayCanvas = document.getElementById("gjs-canvas");
+
+    function getCanvasOffset () {
+        let boundRect = displayCanvas.getBoundingClientRect();
+        return [boundRect.left, boundRect.top];
+    }
+
+    function touch_start(ev){
+        ev.preventDefault();
+        let canvasOffset = getCanvasOffset();
+        let touch = ev.touches[0];
+        let pos = [touch.clientX - canvasOffset[0],
+                   touch.clientY - canvasOffset[1]];
+        input_start(touch.identifier, pos);
+    }
+
+    function touch_end(ev){
+        let touch = ev.changedTouches[0];
+        input_end(touch.identifier);
+    }
+
+    function touch_move(ev){
+        ev.preventDefault();
+        let canvasOffset = getCanvasOffset();
+        let touch = ev.touches[0];
+        let pos = [touch.clientX - canvasOffset[0],
+                   touch.clientY - canvasOffset[1]];
+        input_update(touch.identifier, pos);
+    }
+
+    document.addEventListener("touchstart", touch_start, false);
+    document.addEventListener("touchend", touch_end, false);
+    document.addEventListener("touchmove", touch_move, false);
 }
 
 function change_setting()
 {
-    setting = {};
-	let argv = document.location.hash.substr(1).split(/,/);
-	for (let v of argv) {
-		switch (v) {
-			case "hints": setting.show_hints = true; break;
-			case "debug":
-				      setting.debug = true;
-				      setting.show_hints = true;
-				      break;
-			case "mono": setting.mono = true; break;
-			case "bg": setting.bg = true; break;
-		}
-	}
-	if (setting.debug) futuu.enable_all(sprite);
+    setting.clear();
+
+    let argv = document.location.hash.substr(1).split(/,/);
+    for (let v of argv) {
+        switch (v) {
+            case "hints":
+                setting.show_hints = true;
+                break;
+            case "debug":
+                setting.debug = true;
+                setting.show_hints = true;
+                break;
+            case "mono":
+                setting.mono = true;
+                break;
+            case "bg":
+                setting.bg = true;
+                break;
+        }
+    }
 }
 
 
 function main()
 {
-	font = new gamejs.font.Font('20px monospace');
+    init_actions();
 
-	var display = gamejs.display.setMode(
-		[$h.SCREEN_WIDTH, $h.SCREEN_HEIGHT]);
+    init_touch();
+    let display = gamejs.display.setMode([$h.SCREEN_WIDTH,
+                                          $h.SCREEN_HEIGHT]);
 
-	init_action();
-	init_touch();
-	gamejs.onEvent(function (event) {
-		if (event.type === gamejs.event.MOUSE_MOTION) {
-			$h.mouse_copy(mouse, event.pos);
-			update_mouse(MOUSE_ID, event.pos);
-		} else if (event.type === gamejs.event.MOUSE_DOWN) {
-			start_mouse(MOUSE_ID, event.pos);
-		} else if (event.type === gamejs.event.MOUSE_UP) {
-			end_mouse(MOUSE_ID);
-		}
-	});
+    sprite = new $s.Sprite(display);
+    let bg_sprite = gamejs.image.load("./imagemisc/bg.jpg");
 
-	sprite = new $s.Sprite(display);
-	bg_sprite = gamejs.image.load("./imagemisc/bg.jpg");
+    running.action = futuu;
 
-	var fps_sec = 0, fps = 0, fps_last = 0;
-	running.action = futuu;
-	gamejs.onTick(function (ms_pass) {
-		// fps
-		fps_sec += ms_pass;
-		fps++;
-		if (fps_sec >= 1000) {
-			fps_last = fps;
-			fps_sec = 0;
-			fps = 0;
-		}
-		// update
-		display.clear();
-		if (setting.bg) display.blit(bg_sprite);
-		update_running(display, sprite, ms_pass);
-		if (running.id == "") {
-			draw_hint(display, setting.show_hints);
-		}
-		futuu.draw_icon(display);
-		if (setting.debug) {
-			display.blit(font.render("fps: " + fps_last));
-			display.blit(font.render(running.mouse), [0, 20]);
-			var pos = [0, 40];
-			var a = "back,face,top,bottom,front".split(/,/);
-			for (var i in a) {
-				pos[1] += 20;
-				var s = "+" + sprite.get_layer(a[i]);
-				display.blit(font.render(s), pos);
-			}
-		}
-	});
+    gamejs.onEvent(function (event) {
+        if (event.type === gamejs.event.MOUSE_MOTION) {
+            input_update(DEVICE_ID_MOUSE, event.pos);
+        } else if (event.type === gamejs.event.MOUSE_DOWN) {
+            input_start(DEVICE_ID_MOUSE, event.pos);
+        } else if (event.type === gamejs.event.MOUSE_UP) {
+            input_end(DEVICE_ID_MOUSE);
+        }
+    });
+
+    // main loop
+    let font = new gamejs.font.Font('20px monospace');
+    let fps_sec = 0, fps = 0, fps_last = 0;
+    gamejs.onTick(function (ms_pass) {
+        // update
+        if (setting.bg) {
+            display.blit(bg_sprite);
+        } else {
+            display.clear();
+        }
+
+        // running
+        if (!running.action.update(display, sprite,
+                                   running.device_pos, ms_pass)) {
+            input_end(running.device_id);
+        }
+        if (running.device_id === DEVICE_ID_NONE) {
+            draw_hint(display, running.device_pos, setting.show_hints);
+        }
+
+        // draw parts icons
+        futuu.draw_icons(display);
+
+        // debug
+        if (setting.debug) {
+            futuu.enable_all(sprite);
+
+            // fps
+            fps_sec += ms_pass;
+            fps++;
+            if (fps_sec >= 1000) {
+                fps_last = fps;
+                fps_sec = 0;
+                fps = 0;
+            }
+            display.blit(font.render("fps: " + fps_last));
+            display.blit(font.render(running.device_pos), [0, 20]);
+
+            // parts info
+            let p = [0, 40];
+            let v = "back,face,top,bottom,front".split(/,/);
+            for (let part of v) {
+                p[1] += 20;
+                let s = "+" + sprite.get_layer(part);
+                display.blit(font.render(s), p);
+            }
+        }
+    });
 };
 
 // init setting
@@ -417,3 +460,4 @@ window.addEventListener("hashchange", change_setting, false);
 
 gamejs.preload((setting.mono) ? $img_list.mono : $img_list.color);
 gamejs.ready(main);
+/* vim: set et ts=4 sts=4 sw=4: */
