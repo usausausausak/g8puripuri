@@ -1,5 +1,6 @@
 g8 wo puripuri suru game ^p^
 ===========================
+![Screenshot](puripuri.gif?raw=true)
 
 Build
 -----
