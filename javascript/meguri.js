@@ -52,8 +52,15 @@ exports.Action = function ()
         return 0;
     }
 
+    let count = 0;
+
+    this.title = "mekuri";
     this.active = false;
-    this.max_time = 0;
+
+    this.report = function ()
+    {
+        return `${count}`;
+    }
 
     this.start = function (sprite, device_pos)
     {
@@ -76,7 +83,7 @@ exports.Action = function ()
     {
         this.active = false;
         if (last_level >= hold_times.length) {
-            this.max_time = hold_pass;
+            count++;
         }
 
         let end_anime = (in_stop_anime) ? sprite_anime : null;

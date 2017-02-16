@@ -11,10 +11,20 @@ exports.Action = function ()
     let images = $h.new_image_list("puri1face", "puri2face", "puri3face");
 
     let is_right = false;
+    let hold_pass = 0; // time of no moving
+    let total_pass = 0;
+    let last_level = 0;
     let device_pos_start = [0, 0];
 
+    let max_time = 0;
+
+    this.title = "puripuri";
     this.active = false;
-    this.max_time = 0;
+
+    this.report = function ()
+    {
+        return `${max_time / 1000}sec`;
+    }
 
     this.start = function (sprite, device_pos)
     {
@@ -34,6 +44,10 @@ exports.Action = function ()
     this.end = function ()
     {
         this.active = false;
+
+        hold_pass = 0;
+        total_pass = 0;
+        last_level = 0;
         return null;
     }
 
@@ -54,6 +68,9 @@ exports.Action = function ()
 
     this.update = function (display, sprite, device_pos, ms_pass)
     {
+        hold_pass += ms_pass;
+        total_pass += ms_pass;
+
         let diff = $h.pos_diff(device_pos, device_pos_start);
         if (!is_right) {
             diff.x = -diff.x;
@@ -65,6 +82,20 @@ exports.Action = function ()
         }
         if (level < 0) {
             level = 0;
+        }
+
+        if (last_level !== level) {
+            last_level = level;
+            hold_pass = 0;
+        }
+
+        if (hold_pass >= 400) {
+            hold_pass = 0;
+            total_pass = 0;
+        }
+
+        if (total_pass > max_time) {
+            max_time = total_pass;
         }
 
         sprite.draw({ "face": images[level] });

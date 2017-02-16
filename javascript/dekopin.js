@@ -27,8 +27,15 @@ exports.Action = function ()
     let sec_pass = 0;
     let hold_sec = 1000;
 
+    let count = 0;
+
+    this.title = "dekopin";
     this.active = false;
-    this.count = 0;
+
+    this.report = function ()
+    {
+        return `${count}`;
+    }
 
     this.start = function (sprite, device_pos)
     {
@@ -39,10 +46,10 @@ exports.Action = function ()
     {
         this.active = false;
         if (sec_pass >= hold_sec) {
-            this.count++;
+            count++;
         }
 
-        if (this.count >= 5) {
+        if (count >= 5) {
             sprite.enable_flag("pero");
         }
 

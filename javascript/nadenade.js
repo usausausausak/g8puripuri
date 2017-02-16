@@ -15,8 +15,15 @@ exports.Action = function ()
     let total_pass = 0;
     let device_pos_start = [0, 0];
 
+    let max_time = 0;
+
+    this.title = "nadenade";
     this.active = false;
-    this.max_time = 0;
+
+    this.report = function ()
+    {
+        return `${max_time / 1000}s`;
+    }
 
     this.start = function (sprite, device_pos)
     {
@@ -27,9 +34,6 @@ exports.Action = function ()
     this.end = function (sprite)
     {
         this.active = false;
-        if (total_pass > this.time) {
-            this.time = total_pass;
-        }
 
         face = 1;
         hand = 1;
@@ -82,6 +86,9 @@ exports.Action = function ()
         sprite.draw({ "face": images[face] });
         $h.blit_image(display, hand_images[hand], $s.DrawingPos());
 
+        if (total_pass > max_time) {
+            max_time = total_pass;
+        }
         if (total_pass >= 3000) {
             sprite.enable_flag("hair2");
         }

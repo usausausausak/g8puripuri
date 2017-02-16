@@ -38,7 +38,7 @@ function Parts()
         };
     }
 
-    let counts = {"hair": 0,
+    this.counts = {"hair": 0,
                   "pero": 0,
                   "takusiage": 0};
 
@@ -143,22 +143,22 @@ function Parts()
         sprite.unset_flag(false, id);
         switch (id) {
         case "hair1":
-            counts.hair++;
+            this.counts.hair++;
             enable("hair2", "hair3");
             sprite.set_layer("back", image_map.back1);
             break;
         case "hair2":
-            counts.hair++;
+            this.counts.hair++;
             enable("hair1", "hair3");
             sprite.set_layer("back", image_map.back2);
             break;
         case "hair3":
-            counts.hair++;
+            this.counts.hair++;
             enable("hair1", "hair2");
             sprite.set_layer("back", image_map.back3);
             break;
         case "pero":
-            counts.pero++;
+            this.counts.pero++;
             pero_anime.reset();
             sprite.set_layer("top", pero_anime);
 
@@ -170,14 +170,14 @@ function Parts()
             disable("takusiage");
             break;
         case "takusiage":
-            counts.takusiage++;
+            this.counts.takusiage++;
             takusiae_anime.reset();
             sprite.set_layer("top", image_map.top_n);
             sprite.set_layer("bottom", takusiae_anime);
             break;
         }
 
-        if (counts.hair >= 7) {
+        if (this.counts.hair >= 7) {
             sprite.enable_flag("hair3");
         }
     }
@@ -215,7 +215,9 @@ function Parts()
 function Futuu()
 {
     let parts = new Parts();
+
     this.active = false;
+
     this.start = function (sprite, device_pos)
     {
         parts.click(device_pos);
@@ -239,6 +241,11 @@ function Futuu()
     this.enable_all = function (sprite)
     {
         parts.enable_all(sprite);
+    }
+
+    this.report_parts = function ()
+    {
+        return parts.counts;
     }
 }
 
@@ -366,9 +373,13 @@ function change_setting()
             case "hints":
                 setting.show_hints = true;
                 break;
+            case "report":
+                setting.show_report = true;
+                break;
             case "debug":
                 setting.debug = true;
                 setting.show_hints = true;
+                setting.show_report = true;
                 break;
             case "mono":
                 setting.mono = true;
@@ -407,6 +418,7 @@ function main()
     // main loop
     let font = new gamejs.font.Font('20px monospace');
     let fps_sec = 0, fps = 0, fps_last = 0;
+    let reports = actions.filter(action => action.report);
     gamejs.onTick(function (ms_pass) {
         // update
         if (setting.bg) {
@@ -427,6 +439,23 @@ function main()
         // draw parts icons
         futuu.draw_icons(display);
 
+        // report
+        if (setting.show_report) {
+            let p = [0, 0];
+            for (let action of reports) {
+                let s = `${action.title}: ${action.report()}`;
+                display.blit(font.render(s), p);
+                p[1] += 20;
+            }
+
+            let parts_report = futuu.report_parts();
+            for (let id in parts_report) {
+                p[1] += 20;
+                let s = `${id}: ${parts_report[id]}`;
+                display.blit(font.render(s), p);
+            }
+        }
+
         // debug
         if (setting.debug) {
             futuu.enable_all(sprite);
@@ -439,16 +468,18 @@ function main()
                 fps_sec = 0;
                 fps = 0;
             }
-            display.blit(font.render("fps: " + fps_last));
-            display.blit(font.render(running.device_pos), [0, 20]);
+            display.blit(font.render("fps: " + fps_last),
+                         [$h.SCREEN_WIDTH - 80, $h.SCREEN_HEIGHT - 35]);
+            display.blit(font.render(running.device_pos),
+                         [$h.SCREEN_WIDTH - 200, $h.SCREEN_HEIGHT - 35]);
 
             // parts info
-            let p = [0, 40];
+            let p = [$h.SCREEN_WIDTH - 120, 0];
             let v = "back,face,top,bottom,front".split(/,/);
             for (let part of v) {
-                p[1] += 20;
-                let s = "+" + sprite.get_layer(part);
+                let s = `+${sprite.get_layer(part)}`;
                 display.blit(font.render(s), p);
+                p[1] += 20;
             }
         }
     });

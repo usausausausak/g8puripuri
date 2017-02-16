@@ -16,8 +16,15 @@ exports.Action = function ()
 
     let sprite_anime = new $s.SpriteAnime(anime);
 
+    let count = 0;
+
+    this.title = "pantssawaru";
     this.active = false;
-    this.count = 0;
+
+    this.report = function ()
+    {
+        return `${count}`;
+    }
 
     this.start = function (sprite, device_pos)
     {
@@ -33,7 +40,7 @@ exports.Action = function ()
     this.end = function ()
     {
         this.active = false;
-        this.count++;
+        count++;
         return sprite_anime;
     }
 
