@@ -270,11 +270,15 @@ function Futuu()
 function EndAnime(sprite_anime)
 {
     sprite_anime.reset();
-    this.start = function (sprite, device_pos) {
+    this.start = function (sprite) {
+        sprite.set_metama_move(false);
         return true;
     }
 
-    this.end = function () {}
+    this.end = function (sprite) {
+        sprite.set_metama_move(true);
+        return null;
+    }
 
     this.update = function (display, sprite, device_pos, ms_pass)
     {
@@ -340,7 +344,12 @@ function input_end(device_id)
     }
 
     let end_anime = running.action.end(sprite);
-    running.action = (end_anime) ? new EndAnime(end_anime) : futuu;
+    if (end_anime) {
+        running.action = new EndAnime(end_anime);
+        running.action.start(sprite);
+    } else {
+        running.action = futuu;
+    }
     running.device_id = DEVICE_ID_NONE;
 }
 
