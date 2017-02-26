@@ -13,6 +13,7 @@ function make_img()
 		shift
 		make back.png "back1 back2 back3"
 		make face.png "face1 face2 face3"
+		make metama.png "metama1l metama1r"
 		make top.png "top_n top_b top_l"
 		make bottom.png "bottom1"
 		make puri_face.png "puri1face puri2face puri3face"
@@ -75,9 +76,11 @@ function conv_img()
 		conv top_b.png tl tr t ^tp stl str st
 		conv top_l.png tl t ^tp stl st
 		conv bottom1.png b ^bp sb
-		conv face1.png fb f1 h1 m1
-		conv face2.png fb f1 h1 m2
-		conv face3.png fb f1 h1 m3
+		conv face1.png fb f1 e1 h1 m1
+		conv face2.png fb f1 e2 h1 m1
+		conv face3.png fb f1 e3 h1 m1
+		conv metama1l.png metama1l
+		conv metama1r.png metama1r
 		conv puri1face.png fb f1 h1 puri2m - purih1
 		conv puri2face.png fb puri2f puri2h puri2m - purih2
 		conv puri3face.png fb puri3f puri3h puri3m - purih3
@@ -164,7 +167,7 @@ function do_conv()
 		do
 			cmd="$cmd ../rawmisc/${1}.png -composite"
 			shift
-		done 
+		done
 	fi
 	echo $cmd $file
 	$cmd $file
@@ -199,37 +202,38 @@ function make_icon()
 
 function print_preload()
 {
+	echo '/* Auto generated file */'
 #echo 'exports.mono = ['
 #ls -CQ ./image_m/* | sed 's/\s\s*/, /g;s/$/, /'
 #ls -CQ ./imagemisc/* | tac | sed 's/\s\s*/, /g;2,$s/$/, /' | tac
 #echo '];'
 	echo 'exports.color = exports.mono = ['
-	ls -CQ ./image/* | sed 's/\s\s*/, /g;s/$/, /'
-	ls -CQ ./imagemisc/* | tac | sed 's/\s\s*/, /g;2,$s/$/, /' | tac
+	ls -CQ ./image/* | sed 's/\s\s*/, /g;s/$/,/'
+	ls -CQ ./imagemisc/* | tac | sed 's/\s\s*/, /g;2,$s/$/,/' | tac
 	echo '];'
 	cat << DOC
-// Auto generated file
 var img_data = exports.image_data = {};
 var misc_data = exports.misc_data = {};
 DOC
 	make_img "print" "all"
 	cat << DOC
 gen_image_rect(misc_data,
-	"./imagemisc/hand.png $hand_list", 500, 700);
+    "./imagemisc/hand.png $hand_list", 500, 700);
 gen_image_rect(misc_data,
-	"./imagemisc/icon.png $icon_list", 50, 50);
+    "./imagemisc/icon.png $icon_list", 50, 50);
 
 function gen_image_rect(list, img_data, cell_width, cell_height)
 {
-	var data = img_data.split(/ /);
-	var img_file = data[0];
-	var ids = data.slice(1);
-	for (var i = 0; i < ids.length; ++i) {
-		var id = ids[i];
-		list[id] = { file: img_file,
-			rt: [ cell_width * i, 0, cell_width, cell_height ]};
-	}
+    let data = img_data.split(/ /);
+    let img_file = data[0];
+    let ids = data.slice(1);
+    for (let i = 0; i < ids.length; ++i) {
+        let id = ids[i];
+        list[id] = {file: img_file,
+            rt: [ cell_width * i, 0, cell_width, cell_height ]};
+    }
 }
+/* vim: set et ts=4 sts=4 sw=4: */
 DOC
 
 }

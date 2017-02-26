@@ -90,6 +90,7 @@ function Parts()
                 } else {
                     enable("pero", "takusiage");
                     sprite.reset_layer("top");
+                    sprite.set_metama_move(true);
                     if (++count >= 3) {
                         sprite.enable_flag("takusiage");
                     }
@@ -161,6 +162,7 @@ function Parts()
             this.counts.pero++;
             pero_anime.reset();
             sprite.set_layer("top", pero_anime);
+            sprite.set_metama_move(false);
 
             // stop takusiage when pero give
             if (sprite.get_layer("bottom").match(/^takusiage/)) {
@@ -216,6 +218,9 @@ function Futuu()
 {
     let parts = new Parts();
 
+    let metama_level_x = [0, 100, 197, 487, 563];
+    let metama_level_y = [0, 75, 157, 472, 600];
+
     this.active = false;
 
     this.start = function (sprite, device_pos)
@@ -225,7 +230,20 @@ function Futuu()
     }
 
     this.end = function () { }
-    this.hint = function (display, sprite, device_pos) { }
+    this.hint = function (display, sprite, device_pos) {
+        let level = {x: 0, y: 0};
+        metama_level_x.forEach((x, l) => {
+            if (device_pos[0] >= x) {
+                level.x = l;
+            }
+        });
+        metama_level_y.forEach((y, l) => {
+            if (device_pos[1] > y) {
+                level.y = l;
+            }
+        });
+        sprite.set_metama_level(level);
+    }
 
     this.update = function (display, sprite, device_pos, ms_pass)
     {
@@ -473,13 +491,18 @@ function main()
             display.blit(font.render(running.device_pos),
                          [$h.SCREEN_WIDTH - 200, $h.SCREEN_HEIGHT - 35]);
 
-            // parts info
+
             let p = [$h.SCREEN_WIDTH - 120, 0];
+            // metama info
+            let m = sprite.get_metama_level();
+            display.blit(font.render(`+${m.x}, ${m.y}`), p);
+
+            // parts info
             let v = "back,face,top,bottom,front".split(/,/);
             for (let part of v) {
+                p[1] += 20;
                 let s = `+${sprite.get_layer(part)}`;
                 display.blit(font.render(s), p);
-                p[1] += 20;
             }
         }
     });

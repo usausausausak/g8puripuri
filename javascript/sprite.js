@@ -119,9 +119,21 @@ SpriteAnime.prototype.playing = function (ms_pass)
 //
 let Sprite = exports.Sprite = function (display)
 {
+    drawing_pos = new gamejs.Rect([$h.CENTER_X, 0, 500, 700]);
+
     let image_map = new_image_map("back1", "top_b", "bottom1");
 
-    let face_anime = new Anime(50, "face1", "face2", "face3");
+    let metama_list = $h.new_image_list("metama1l", "metama1r");
+    let metama_move = true;
+    let metama_level = { x: 0, y: 0 };
+    let metama_pos = { left: drawing_pos.clone(), right: drawing_pos.clone() };
+    let metama_adj = {
+        left: [-10, -5, 0, 2, 4],
+        right: [-5, -2, 0, 5, 10],
+        vertical: [-14, -7, 0, 3, 7]
+    }
+
+    let face_anime = new Anime(50, "face1", "face3", "face2");
     face_anime.frames[0].wait = 5000;
     face_anime.loop(true);
 
@@ -141,7 +153,6 @@ let Sprite = exports.Sprite = function (display)
         "front": null
     };
 
-    drawing_pos = new gamejs.Rect([$h.CENTER_X, 0, 500, 700]);
     this.flags = new Map();
     this.flags.set("hair1", false);
 
@@ -158,6 +169,47 @@ let Sprite = exports.Sprite = function (display)
     this.get_layer = function (lid)
     {
         return (layer[lid]) ? layer[lid].id : "";
+    }
+
+    this.set_metama_move = function (move)
+    {
+        metama_move = move;
+    }
+
+    this.get_metama_level = function ()
+    {
+        return {x: metama_level.x, y: metama_level.y};
+    }
+
+    this.set_metama_level = function (level)
+    {
+        x_level = (level.x === undefined) ? metama_level.x : level.x;
+        y_level = (level.y === undefined) ? metama_level.y : level.y;
+        if ((x_level !== metama_level.x) || (y_level !== metama_level.y)) {
+            metama_level.x = x_level;
+            metama_level.y = y_level;
+
+            metama_pos.left = drawing_pos.clone();
+            metama_pos.right = drawing_pos.clone();
+
+            metama_pos.left.x += metama_adj.left[x_level];
+            metama_pos.right.x += metama_adj.right[x_level];
+
+            let adj_v = metama_adj.vertical[y_level];
+            metama_pos.left.y += adj_v;
+            metama_pos.right.y += adj_v;
+        }
+    }
+
+    let draw_metama = function ()
+    {
+        if (metama_move) {
+            display.blit(metama_list[0].img, metama_pos.left, metama_list[0].rt);
+            display.blit(metama_list[1].img, metama_pos.right, metama_list[1].rt);
+        } else {
+            display.blit(metama_list[0].img, drawing_pos, metama_list[0].rt);
+            display.blit(metama_list[1].img, drawing_pos, metama_list[1].rt);
+        }
     }
 
     let playing_layer = function (lid, ms_pass, override)
@@ -177,6 +229,7 @@ let Sprite = exports.Sprite = function (display)
     this.playing = function (ms_pass, override)
     {
         playing_layer("back", ms_pass, override);
+        draw_metama();
         playing_layer("face", ms_pass, override);
         playing_layer("top", ms_pass, override);
         playing_layer("bottom", ms_pass, override);
@@ -200,6 +253,7 @@ let Sprite = exports.Sprite = function (display)
     this.draw = function (override)
     {
         draw_layer("back", override);
+        draw_metama();
         draw_layer("face", override);
         draw_layer("top", override);
         draw_layer("bottom", override);
