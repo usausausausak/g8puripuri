@@ -389,21 +389,21 @@ function change_setting()
     for (let v of argv) {
         switch (v) {
             case "hints":
-                setting.show_hints = true;
+                setting.set("show_hints", true);
                 break;
             case "report":
-                setting.show_report = true;
+                setting.set("show_report", true);
                 break;
             case "debug":
-                setting.debug = true;
-                setting.show_hints = true;
-                setting.show_report = true;
+                setting.set("debug", true);
+                setting.set("show_hints", true);
+                setting.set("show_report", true);
                 break;
             case "mono":
-                setting.mono = true;
+                setting.set("mono", true);
                 break;
             case "bg":
-                setting.bg = true;
+                setting.set("bg", true);
                 break;
         }
     }
@@ -439,7 +439,7 @@ function main()
     let reports = actions.filter(action => action.report);
     gamejs.onTick(function (ms_pass) {
         // update
-        if (setting.bg) {
+        if (setting.get("bg")) {
             display.blit(bg_sprite);
         } else {
             display.clear();
@@ -451,14 +451,14 @@ function main()
             input_end(running.device_id);
         }
         if (running.device_id === DEVICE_ID_NONE) {
-            draw_hint(display, running.device_pos, setting.show_hints);
+            draw_hint(display, running.device_pos, setting.get("show_hints"));
         }
 
         // draw parts icons
         futuu.draw_icons(display);
 
         // report
-        if (setting.show_report) {
+        if (setting.get("show_report")) {
             let p = [0, 0];
             for (let action of reports) {
                 let s = `${action.title}: ${action.report()}`;
@@ -475,7 +475,7 @@ function main()
         }
 
         // debug
-        if (setting.debug) {
+        if (setting.get("debug")) {
             futuu.enable_all(sprite);
 
             // fps
@@ -512,6 +512,6 @@ function main()
 change_setting();
 window.addEventListener("hashchange", change_setting, false);
 
-gamejs.preload((setting.mono) ? $img_list.mono : $img_list.color);
+gamejs.preload((setting.get("mono")) ? $img_list.mono : $img_list.color);
 gamejs.ready(main);
 /* vim: set et ts=4 sts=4 sw=4: */
