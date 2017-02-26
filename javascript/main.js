@@ -230,7 +230,10 @@ function Futuu()
     }
 
     this.end = function () { }
-    this.hint = function (display, sprite, device_pos) {
+    this.hint = function (display, sprite, device_pos) { }
+
+    this.update = function (display, sprite, device_pos, ms_pass)
+    {
         let level = {x: 0, y: 0};
         metama_level_x.forEach((x, l) => {
             if (device_pos[0] >= x) {
@@ -243,10 +246,7 @@ function Futuu()
             }
         });
         sprite.set_metama_level(level);
-    }
 
-    this.update = function (display, sprite, device_pos, ms_pass)
-    {
         sprite.playing(ms_pass);
         return true;
     }
